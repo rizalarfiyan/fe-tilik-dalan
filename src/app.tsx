@@ -1,4 +1,4 @@
-import RouteProvider from './providers/route-provider'
+import RouteProvider from '@providers/route-provider'
 
 function App() {
 	return <RouteProvider />
