@@ -3,6 +3,6 @@ pre-commit:
   jobs:
     - name: linter
       glob: "*.{js,cjs,cts,mjs,ts,mts,jsx,tsx}"
-      run: "bun lint {staged_files}"
+      run: "bun lint {staged_files} && git add {staged_files}"
     - name: format
-      run: "bun format {staged_files}"
+      run: "bun format {staged_files} && git add {staged_files}"
