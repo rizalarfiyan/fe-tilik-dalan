@@ -1,0 +1,8 @@
+pre-commit:
+  parallel: true
+  jobs:
+    - name: linter
+      glob: "*.{js,cjs,cts,mjs,ts,mts,jsx,tsx}"
+      run: "bun lint {staged_files}"
+    - name: format
+      run: "bun format {staged_files}"
