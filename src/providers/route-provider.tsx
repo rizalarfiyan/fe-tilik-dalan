@@ -1,7 +1,7 @@
-import type React from 'react'
-import { Suspense } from 'react'
+import * as React from 'react'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from '@/routeTree.gen'
+import LoadingScreen from '@/components/loading-screen'
 
 const router = createRouter({
 	routeTree,
@@ -11,7 +11,7 @@ const router = createRouter({
 	defaultPreload: 'intent',
 	defaultPreloadStaleTime: 0,
 	defaultPendingMinMs: 0,
-	defaultPendingComponent: () => <h1>Collecting data...</h1>,
+	defaultPendingComponent: () => <LoadingScreen reason="Collecting data..." />,
 })
 
 declare module '@tanstack/react-router' {
@@ -26,9 +26,11 @@ declare module '@tanstack/react-router' {
 
 const RouteProvider: React.FC<React.PropsWithChildren> = () => {
 	return (
-		<Suspense fallback={<h1>Initializing router...</h1>}>
+		<React.Suspense
+			fallback={<LoadingScreen reason="Initializing router..." />}
+		>
 			<RouterProvider router={router} />
-		</Suspense>
+		</React.Suspense>
 	)
 }
 

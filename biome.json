@@ -42,6 +42,9 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
+			"nursery": {
+				"useSortedClasses": "error"
+			},
 			"complexity": {
 				"noBannedTypes": "error",
 				"noExtraBooleanCast": "error",
