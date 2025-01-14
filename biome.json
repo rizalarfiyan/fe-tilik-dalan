@@ -125,11 +125,11 @@
 			"jsxQuoteStyle": "double",
 			"quoteProperties": "asNeeded",
 			"trailingCommas": "all",
-			"semicolons": "always",
+			"semicolons": "asNeeded",
 			"arrowParentheses": "always",
 			"bracketSpacing": true,
 			"bracketSameLine": false,
-			"quoteStyle": "double",
+			"quoteStyle": "single",
 			"attributePosition": "auto"
 		}
 	},
