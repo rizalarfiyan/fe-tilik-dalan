@@ -135,6 +135,16 @@
 	},
 	"overrides": [
 		{
+			"include": ["src/routeTree.gen.ts"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noExplicitAny": "off"
+					}
+				}
+			}
+		},
+		{
 			"include": ["*.{js,cjs,cts,mjs,ts,mts,jsx,tsx}"],
 			"linter": {
 				"rules": {
