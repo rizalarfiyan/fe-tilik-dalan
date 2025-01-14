@@ -18,14 +18,16 @@
 		"noUncheckedSideEffectImports": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["src/*"],
+			"@types/*": ["src/types/*"],
 			"@components/*": ["src/components/*"],
 			"@css/*": ["src/assets/css/*"],
 			"@hooks/*": ["src/hooks/*"],
 			"@libs/*": ["src/libs/*"],
 			"@providers/*": ["src/providers/*"],
 			"@stores/*": ["src/stores/*"],
-			"@utils/*": ["src/utils/*"]
+			"@lib/*": ["src/lib/*"],
+			"@constants": ["src/constants.ts"],
+			"@/*": ["src/*"]
 		}
 	},
 	"include": ["src"]

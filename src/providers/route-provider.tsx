@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from '@/routeTree.gen'
-import LoadingScreen from '@/components/loading-screen'
+import LoadingScreen from '@components/loading-screen'
+import useAuth from '@hooks/useAuth'
 
 const router = createRouter({
 	routeTree,
@@ -25,11 +26,12 @@ declare module '@tanstack/react-router' {
 }
 
 const RouteProvider: React.FC<React.PropsWithChildren> = () => {
+	const auth = useAuth()
 	return (
 		<React.Suspense
 			fallback={<LoadingScreen reason="Initializing router..." />}
 		>
-			<RouterProvider router={router} />
+			<RouterProvider router={router} context={{ auth }} />
 		</React.Suspense>
 	)
 }

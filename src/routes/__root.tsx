@@ -18,10 +18,10 @@ export const Route = createRootRoute({
 		</>
 	),
 	notFoundComponent: () => (
-		<div className='flex min-h-screen w-full items-center justify-center'>
-			<div className='space-y-2 text-center'>
+		<div className="flex min-h-screen w-full items-center justify-center">
+			<div className="space-y-2 text-center">
 				<h1 className="font-semibold text-4xl">Page Not Found</h1>
-				<Link to="/" className='block text-primary underline'>
+				<Link to="/" className="block text-primary underline">
 					Back to Home
 				</Link>
 			</div>
