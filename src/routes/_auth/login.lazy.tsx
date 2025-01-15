@@ -1,17 +1,68 @@
 import GoogleIcon from '@components/google-icon'
+import LoadingScreen from '@components/loading-screen'
 import Logo from '@components/logo'
 import Typography from '@components/typography'
 import { Button } from '@components/ui/button'
 import { API_BASE_URL } from '@constants'
+import useAuth from '@hooks/useAuth'
 import illustration from '@illustration/login.svg'
-import { createLazyFileRoute, Link } from '@tanstack/react-router'
+import { createLazyFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
+import React, { useEffect } from 'react'
+import { toast } from 'sonner'
 
 export const Route = createLazyFileRoute('/_auth/login')({
 	component: Page,
 })
 
+interface IAuthToken {
+	message: string
+	token?: string
+}
+
+const parseToken = (val?: string): IAuthToken => {
+	if (!val) {
+		return { message: 'No token provided' }
+	}
+
+	try {
+		return JSON.parse(atob(val))
+	} catch {
+		return { message: 'Invalid token' }
+	}
+}
+
 function Page() {
+	const auth = useAuth()
+	const data = Route.useSearch()
+	const token = parseToken(data.token)
+	const navigate = useNavigate()
+	const [showLoading, setShowLoading] = React.useState(!!data.token)
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Only first render
+	useEffect(() => {
+		if (token.token) {
+			auth
+				.login(token.token)
+				.then(() => {
+					navigate({
+						to: '/',
+						replace: true,
+					})
+					toast.success(token.message)
+				})
+				.catch(() => {
+					toast.error(token?.message ?? 'Failed to login')
+					setShowLoading(false)
+				})
+			return
+		}
+	}, [])
+
+	if (showLoading) {
+		return <LoadingScreen reason="Checking user info..." />
+	}
+
 	return (
 		<main className="flex w-full">
 			<div className="relative hidden h-screen flex-1 items-center justify-center bg-slate-900 lg:flex">

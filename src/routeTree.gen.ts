@@ -14,12 +14,11 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthImport } from './routes/_auth'
-import { Route as AuthVerifyImport } from './routes/_auth/verify'
+import { Route as AuthLoginImport } from './routes/_auth/login'
 
 // Create Virtual Routes
 
 const IndexLazyImport = createFileRoute('/')()
-const AuthLoginLazyImport = createFileRoute('/_auth/login')()
 
 // Create/Update Routes
 
@@ -34,17 +33,11 @@ const IndexLazyRoute = IndexLazyImport.update({
 	getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
-const AuthLoginLazyRoute = AuthLoginLazyImport.update({
+const AuthLoginRoute = AuthLoginImport.update({
 	id: '/login',
 	path: '/login',
 	getParentRoute: () => AuthRoute,
 } as any).lazy(() => import('./routes/_auth/login.lazy').then((d) => d.Route))
-
-const AuthVerifyRoute = AuthVerifyImport.update({
-	id: '/verify',
-	path: '/verify',
-	getParentRoute: () => AuthRoute,
-} as any).lazy(() => import('./routes/_auth/verify.lazy').then((d) => d.Route))
 
 // Populate the FileRoutesByPath interface
 
@@ -64,18 +57,11 @@ declare module '@tanstack/react-router' {
 			preLoaderRoute: typeof AuthImport
 			parentRoute: typeof rootRoute
 		}
-		'/_auth/verify': {
-			id: '/_auth/verify'
-			path: '/verify'
-			fullPath: '/verify'
-			preLoaderRoute: typeof AuthVerifyImport
-			parentRoute: typeof AuthImport
-		}
 		'/_auth/login': {
 			id: '/_auth/login'
 			path: '/login'
 			fullPath: '/login'
-			preLoaderRoute: typeof AuthLoginLazyImport
+			preLoaderRoute: typeof AuthLoginImport
 			parentRoute: typeof AuthImport
 		}
 	}
@@ -84,13 +70,11 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthRouteChildren {
-	AuthVerifyRoute: typeof AuthVerifyRoute
-	AuthLoginLazyRoute: typeof AuthLoginLazyRoute
+	AuthLoginRoute: typeof AuthLoginRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-	AuthVerifyRoute: AuthVerifyRoute,
-	AuthLoginLazyRoute: AuthLoginLazyRoute,
+	AuthLoginRoute: AuthLoginRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -98,31 +82,28 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 export interface FileRoutesByFullPath {
 	'/': typeof IndexLazyRoute
 	'': typeof AuthRouteWithChildren
-	'/verify': typeof AuthVerifyRoute
-	'/login': typeof AuthLoginLazyRoute
+	'/login': typeof AuthLoginRoute
 }
 
 export interface FileRoutesByTo {
 	'/': typeof IndexLazyRoute
 	'': typeof AuthRouteWithChildren
-	'/verify': typeof AuthVerifyRoute
-	'/login': typeof AuthLoginLazyRoute
+	'/login': typeof AuthLoginRoute
 }
 
 export interface FileRoutesById {
 	__root__: typeof rootRoute
 	'/': typeof IndexLazyRoute
 	'/_auth': typeof AuthRouteWithChildren
-	'/_auth/verify': typeof AuthVerifyRoute
-	'/_auth/login': typeof AuthLoginLazyRoute
+	'/_auth/login': typeof AuthLoginRoute
 }
 
 export interface FileRouteTypes {
 	fileRoutesByFullPath: FileRoutesByFullPath
-	fullPaths: '/' | '' | '/verify' | '/login'
+	fullPaths: '/' | '' | '/login'
 	fileRoutesByTo: FileRoutesByTo
-	to: '/' | '' | '/verify' | '/login'
-	id: '__root__' | '/' | '/_auth' | '/_auth/verify' | '/_auth/login'
+	to: '/' | '' | '/login'
+	id: '__root__' | '/' | '/_auth' | '/_auth/login'
 	fileRoutesById: FileRoutesById
 }
 
@@ -156,16 +137,11 @@ export const routeTree = rootRoute
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
-        "/_auth/verify",
         "/_auth/login"
       ]
     },
-    "/_auth/verify": {
-      "filePath": "_auth/verify.tsx",
-      "parent": "/_auth"
-    },
     "/_auth/login": {
-      "filePath": "_auth/login.lazy.tsx",
+      "filePath": "_auth/login.tsx",
       "parent": "/_auth"
     }
   }
