@@ -12,6 +12,7 @@ import {
 
 import data from './data.json'
 import 'leaflet/dist/leaflet.css'
+import HlsPlayer from '@components/hls-player'
 
 export const Route = createLazyFileRoute('/dashboard/')({
 	component: RouteComponent,
@@ -25,7 +26,7 @@ interface DataJson {
 	longitude: number
 }
 
-function MapMarker({ latitude, longitude, title }: DataJson) {
+function MapMarker({ latitude, longitude, title, link }: DataJson) {
 	const [isOpen, setIsOpen] = useState(false)
 
 	return (
@@ -35,6 +36,12 @@ function MapMarker({ latitude, longitude, title }: DataJson) {
 					<DialogHeader>
 						<DialogTitle className="text-center">{title}</DialogTitle>
 					</DialogHeader>
+					<HlsPlayer
+						className="aspect-video h-full w-full overflow-hidden rounded-md"
+						src={link}
+						autoPlay
+						controls
+					/>
 				</DialogContent>
 			</Dialog>
 			<Marker
