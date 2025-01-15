@@ -4,6 +4,7 @@ import type { BaseResponse } from '@/types/api'
 import { KEY_ACCESS_TOKEN } from '@constants'
 import axios from '@lib/axios'
 import LoadingScreen from '@components/loading-screen'
+import { toast } from 'sonner'
 
 export const AuthContext = React.createContext<IAuthContext | null>(null)
 
@@ -24,7 +25,7 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 				setUser(res.data.data)
 			})
 			.catch(() => {
-				// TODO: add toast notification session expired
+				toast.error('Failed to fetch user info. Logging out...')
 				internalLogout()
 				const timeout = setTimeout(() => {
 					window.location.href = '/login'
