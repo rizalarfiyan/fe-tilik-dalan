@@ -13,7 +13,7 @@ const typographyVariants = cva('text-slate-800', {
 			lead: 'text-muted-foreground text-xl',
 			large: 'font-semibold text-lg',
 			small: 'font-medium text-sm leading-none',
-			muted: 'text-muted-foreground text-sm',
+			muted: 'text-muted-foreground',
 		},
 	},
 	defaultVariants: {
