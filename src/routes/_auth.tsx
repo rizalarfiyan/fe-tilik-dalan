@@ -4,7 +4,7 @@ export const Route = createFileRoute('/_auth')({
 	beforeLoad: ({ context }) => {
 		if (context.auth.isLoggedIn) {
 			throw redirect({
-				to: '/',
+				to: '/dashboard',
 				replace: true,
 			})
 		}

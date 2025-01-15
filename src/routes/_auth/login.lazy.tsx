@@ -46,7 +46,7 @@ function Page() {
 				.login(token.token)
 				.then(() => {
 					navigate({
-						to: '/',
+						to: '/dashboard',
 						replace: true,
 					})
 					toast.success(token.message)
