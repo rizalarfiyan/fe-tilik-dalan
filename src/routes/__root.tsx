@@ -1,9 +1,6 @@
 import type { IRouterContext } from '@/types/app'
-import {
-	Link,
-	Outlet,
-	createRootRouteWithContext,
-} from '@tanstack/react-router'
+import NotFound from '@components/not-found'
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import * as React from 'react'
 
 const TanStackRouterDevtools =
@@ -22,14 +19,5 @@ export const Route = createRootRouteWithContext<IRouterContext>()({
 			<TanStackRouterDevtools />
 		</>
 	),
-	notFoundComponent: () => (
-		<div className="flex min-h-screen w-full items-center justify-center">
-			<div className="space-y-2 text-center">
-				<h1 className="font-semibold text-4xl">Page Not Found</h1>
-				<Link to="/" className="block text-primary underline">
-					Back to Home
-				</Link>
-			</div>
-		</div>
-	),
+	notFoundComponent: NotFound,
 })
