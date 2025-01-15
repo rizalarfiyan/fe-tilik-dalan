@@ -15,6 +15,7 @@
 		"postinstall": "lefthook install"
 	},
 	"dependencies": {
+		"@radix-ui/react-dialog": "^1.1.4",
 		"@radix-ui/react-slot": "^1.1.1",
 		"@tanstack/react-router": "^1.95.6",
 		"axios": "^1.7.9",
