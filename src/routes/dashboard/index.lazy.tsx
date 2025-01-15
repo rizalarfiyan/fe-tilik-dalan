@@ -1,18 +1,18 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
-import { Marker } from 'react-leaflet/Marker'
-import { MapContainer } from 'react-leaflet/MapContainer'
-import { TileLayer } from 'react-leaflet/TileLayer'
-import { useMemo, useState } from 'react'
+import HlsPlayer from '@components/hls-player'
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 } from '@components/ui/dialog'
-
-import data from './data.json'
+import { createLazyFileRoute } from '@tanstack/react-router'
+import type { Map as LeafletMap } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import HlsPlayer from '@components/hls-player'
+import { useMemo, useRef, useState } from 'react'
+import { MapContainer } from 'react-leaflet/MapContainer'
+import { Marker } from 'react-leaflet/Marker'
+import { TileLayer } from 'react-leaflet/TileLayer'
+import data from './data.json'
 
 export const Route = createLazyFileRoute('/dashboard/')({
 	component: RouteComponent,
@@ -65,13 +65,25 @@ function RouteComponent() {
 		})
 	}, [])
 
+	const mapRef = useRef<LeafletMap>(null)
+
 	return (
 		<div className="relative">
+			<div className='fixed top-0 right-0 z-[1000] bg-white p-2'>
+				<button type='button' onClick={() => mapRef.current!.flyTo([-7.8, 110.4], 11.5)}>
+					Reset Map
+				</button>
+				<button type='button' onClick={() => mapRef.current!.flyTo([-7.7226, 110.3892], 18)}>
+					Sungai Ngentak
+				</button>
+			</div>
 			<MapContainer
 				center={[-7.8, 110.4]}
 				zoom={11.5}
 				className="h-screen w-screen"
+				ref={mapRef}
 			>
+				{/* <MapController /> */}
 				<TileLayer
 					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 					url="https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
