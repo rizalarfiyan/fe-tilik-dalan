@@ -1,5 +1,5 @@
 import * as React from 'react'
-import type { IAuth, IAuthContext, IAuthUser } from '@/types/auth'
+import type { IAuthContext, IAuthUser } from '@/types/auth'
 import type { BaseResponse } from '@/types/api'
 import { KEY_ACCESS_TOKEN } from '@constants'
 import axios from '@lib/axios'
@@ -17,26 +17,26 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 		localStorage.removeItem(KEY_ACCESS_TOKEN)
 	}
 
+	const fetchMe = async () => {
+		await axios
+			.get<BaseResponse<IAuthUser>>('/auth/me')
+			.then((res) => {
+				setUser(res.data.data)
+			})
+			.catch(() => {
+				// TODO: add toast notification session expired
+				internalLogout()
+				const timeout = setTimeout(() => {
+					window.location.href = '/login'
+					clearTimeout(timeout)
+				}, 1500)
+			})
+			.finally(() => setIsLoading(false))
+	}
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: This effect should only run once
 	React.useEffect(() => {
 		if (!isActiveUser) return
-		const fetchMe = async () => {
-			await axios
-				.get<BaseResponse<IAuthUser>>('/me')
-				.then((res) => {
-					setUser(res.data.data)
-				})
-				.catch(() => {
-					// TODO: add toast notification session expired
-					internalLogout()
-					const timeout = setTimeout(() => {
-						window.location.href = '/login'
-						clearTimeout(timeout)
-					}, 1500)
-				})
-				.finally(() => setIsLoading(false))
-		}
-
 		fetchMe()
 	}, [])
 
@@ -45,15 +45,16 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 		return {
 			user,
 			isLoggedIn: !!user,
-			login: (user: IAuth) => {
-				return new Promise<void>((resolve) => {
-					localStorage.setItem(KEY_ACCESS_TOKEN, user.access_token)
-
-					setUser(user.user)
-					const timeout = setTimeout(() => {
-						clearTimeout(timeout)
-						resolve()
-					}, 10)
+			login: (token: string) => {
+				return new Promise<void>((resolve, reject) => {
+					localStorage.setItem(KEY_ACCESS_TOKEN, token)
+					fetchMe()
+						.then(() => {
+							resolve()
+						})
+						.catch((err) => {
+							reject(err)
+						})
 				})
 			},
 			logout: () => {

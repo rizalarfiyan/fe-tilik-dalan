@@ -12,6 +12,6 @@ export type IAuth = {
 export interface IAuthContext {
 	user?: IAuthUser
 	isLoggedIn: boolean
-	login: (user: IAuth) => Promise<void>
+	login: (token: string) => Promise<void>
 	logout: () => Promise<void>
 }
