@@ -1,28 +1,41 @@
+import type { CCTV } from '@/types/cctv'
 import Typography from '@components/typography'
 import { Button } from '@components/ui/button'
-import { Input } from '@components/ui/input'
 import { Label } from '@components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@components/ui/radio-group'
 import { ScrollArea } from '@components/ui/scroll-area'
 import useMaps from '@hooks/use-maps'
-import {
-	ArrowDownNarrowWide,
-	ArrowUpNarrowWide,
-	MapPin,
-	Pin,
-	RotateCcw,
-	Search,
-} from 'lucide-react'
+import Fuse from 'fuse.js'
+import { MapPin, Pin } from 'lucide-react'
 import * as React from 'react'
+import { Route } from '../index'
+import Order from './order'
+import Search from './search'
 
 function ListCCTV() {
+	const params = Route.useSearch()
 	const { cctv, active, setActive, movePosition } = useMaps()
-	const [isDescending, setIsDescending] = React.useState(true)
 
-	const onChangeSort = (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault()
-		setIsDescending((prev) => !prev)
-	}
+	const fuse = React.useMemo(
+		() =>
+			new Fuse(cctv, {
+				keys: ['title'],
+				includeMatches: true,
+				threshold: 0.5,
+			}),
+		[cctv],
+	)
+
+	const results = React.useMemo((): CCTV[] => {
+		const { search, order } = params
+		const searching = () => {
+			if (!search) return [...cctv]
+			return fuse.search(search).map((val) => val.item)
+		}
+
+		const val = searching()
+		return order === 'desc' ? val.reverse() : val
+	}, [params, cctv, fuse])
 
 	const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
@@ -39,7 +52,7 @@ function ListCCTV() {
 	)
 
 	const lists = React.useMemo(() => {
-		return cctv.map((val) => {
+		return results.map((val) => {
 			return (
 				<div key={val.id}>
 					<RadioGroupItem value={val.id} id={val.id} className="peer sr-only" />
@@ -63,28 +76,13 @@ function ListCCTV() {
 				</div>
 			)
 		})
-	}, [cctv])
+	}, [results])
 
 	return (
 		<div>
-			<div className="flex gap-3 p-3">
-				<Input
-					className="w-full"
-					icon={Search}
-					iconProps={{
-						behavior: 'prepend',
-					}}
-					placeholder="Search..."
-				/>
-				<Button
-					variant="outline"
-					type="button"
-					size="icon"
-					className="flex-shrink-0"
-					onClick={onChangeSort}
-				>
-					{isDescending ? <ArrowUpNarrowWide /> : <ArrowDownNarrowWide />}
-				</Button>
+			<div className="flex gap-3 p-3 pb-0">
+				<Search />
+				<Order />
 				<Button
 					variant="outline"
 					type="button"
@@ -95,7 +93,7 @@ function ListCCTV() {
 					{active ? <Pin /> : <MapPin />}
 				</Button>
 			</div>
-			<ScrollArea type="always" className="h-[calc(100vh_-_0px)] p-3 pr-5">
+			<ScrollArea type="always" className="h-[calc(100vh_-_55px)] p-3 pr-5">
 				<RadioGroup
 					className="relative"
 					onValueChange={onValueChange}
