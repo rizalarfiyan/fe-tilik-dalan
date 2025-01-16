@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import * as React from 'react'
 
-const ListCCTV: React.FC = () => {
+function ListCCTV() {
 	const { cctv, active, setActive, movePosition } = useMaps()
 	const [isDescending, setIsDescending] = React.useState(true)
 
@@ -94,7 +94,7 @@ const ListCCTV: React.FC = () => {
 					{active ? <Pin /> : <RotateCcw />}
 				</Button>
 			</div>
-			<ScrollArea type="always" className="h-screen p-3 pr-5">
+			<ScrollArea type="always" className="h-[calc(100vh_-_70px)] p-3 pr-5">
 				<RadioGroup
 					className="relative"
 					onValueChange={onValueChange}

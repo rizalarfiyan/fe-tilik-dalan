@@ -48,8 +48,6 @@ const MapsProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 				})
 			}
 
-			console.log(move, active)
-
 			if (move) {
 				movement(move)
 				return
@@ -79,6 +77,7 @@ const MapsProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 			deactivate: () => {
 				deactivateMarker()
 				setActive(null)
+				movePosition(DEFAULT_MAP)
 			},
 			movePosition,
 			...state,

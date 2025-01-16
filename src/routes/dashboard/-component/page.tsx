@@ -1,10 +1,11 @@
-import Marker from '@components/maps/marker'
+import Marker from '@/routes/dashboard/-component/marker'
 import { MAP_BOX_API_KEY } from '@constants'
 import useMaps from '@hooks/use-maps'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import * as React from 'react'
 import ReactMapGl, { NavigationControl, ScaleControl } from 'react-map-gl'
 import ListCCTV from './list-cctv'
+import Detail from './detail'
 
 function Page() {
 	const { cctv, mapRef } = useMaps()
@@ -21,9 +22,7 @@ function Page() {
 				<ListCCTV />
 			</div>
 			<div className="relative w-full">
-				<div className="absolute top-4 left-4 z-10 border border-red-500">
-					Information Detail
-				</div>
+				<Detail />
 				<ReactMapGl
 					ref={mapRef}
 					initialViewState={{
