@@ -2,7 +2,7 @@ import * as React from 'react'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from '@/routeTree.gen'
 import LoadingScreen from '@components/loading-screen'
-import useAuth from '@hooks/useAuth'
+import useAuth from '@hooks/use-auth'
 
 const router = createRouter({
 	routeTree,

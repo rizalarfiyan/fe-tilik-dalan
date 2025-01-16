@@ -1,5 +1,5 @@
 import { Button } from '@components/ui/button'
-import useAuth from '@hooks/useAuth'
+import useAuth from '@hooks/use-auth'
 import { createLazyFileRoute, Link } from '@tanstack/react-router'
 import { useMemo } from 'react'
 
