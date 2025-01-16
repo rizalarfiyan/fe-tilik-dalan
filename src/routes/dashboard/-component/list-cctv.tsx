@@ -8,6 +8,7 @@ import useMaps from '@hooks/use-maps'
 import {
 	ArrowDownNarrowWide,
 	ArrowUpNarrowWide,
+	MapPin,
 	Pin,
 	RotateCcw,
 	Search,
@@ -91,10 +92,10 @@ function ListCCTV() {
 					className="flex-shrink-0"
 					onClick={onReset}
 				>
-					{active ? <Pin /> : <RotateCcw />}
+					{active ? <Pin /> : <MapPin />}
 				</Button>
 			</div>
-			<ScrollArea type="always" className="h-[calc(100vh_-_70px)] p-3 pr-5">
+			<ScrollArea type="always" className="h-[calc(100vh_-_0px)] p-3 pr-5">
 				<RadioGroup
 					className="relative"
 					onValueChange={onValueChange}

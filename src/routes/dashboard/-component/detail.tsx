@@ -1,19 +1,27 @@
+import HlsPlayer from '@components/hls-player'
 import { Button } from '@components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card'
 import useMaps from '@hooks/use-maps'
-import { X } from 'lucide-react'
-import type * as React from 'react'
+import { CirclePlay, X } from 'lucide-react'
+import * as React from 'react'
 
 function Detail() {
 	const { active, deactivate } = useMaps()
+	const [isPlaying, setIsPlaying] = React.useState(false)
 
+	// TODO: fix bugs for update the state isPlaying on active change
+	if (!active) return null
+
+	const { title, image, link } = active
 	const onDeactivate = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		deactivate()
 	}
 
-	if (!active) return null
-	const { title } = active
+	const onPlay = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		setIsPlaying(true)
+	}
 
 	return (
 		<Card className="absolute top-4 left-4 z-10 w-full max-w-xl">
@@ -32,8 +40,25 @@ function Detail() {
 				</Button>
 			</div>
 			<CardContent>
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus,
-				facilis!
+				<div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-md bg-slate-200">
+					{isPlaying ? (
+						<HlsPlayer className="h-full w-full" src={link} autoPlay controls />
+					) : (
+						<>
+							<img src={image.src} alt={title} className="object-cover" />
+							<div className="absolute inset-0 h-full w-full bg-slate-700/80" />
+							<Button
+								variant="outline"
+								type="button"
+								size="icon"
+								className="absolute p-6 text-primary"
+								onClick={onPlay}
+							>
+								<CirclePlay className="!size-8" />
+							</Button>
+						</>
+					)}
+				</div>
 			</CardContent>
 		</Card>
 	)
