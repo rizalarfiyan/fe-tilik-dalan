@@ -1,12 +1,32 @@
 import Typography from '@components/typography'
+import { Button } from '@components/ui/button'
+import { Input } from '@components/ui/input'
 import { Label } from '@components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@components/ui/radio-group'
 import { ScrollArea } from '@components/ui/scroll-area'
 import useMaps from '@hooks/use-maps'
+import {
+	ArrowDownNarrowWide,
+	ArrowUpNarrowWide,
+	Pin,
+	RotateCcw,
+	Search,
+} from 'lucide-react'
 import * as React from 'react'
 
 const ListCCTV: React.FC = () => {
-	const { cctv, active, setActive } = useMaps()
+	const { cctv, active, setActive, movePosition } = useMaps()
+	const [isDescending, setIsDescending] = React.useState(true)
+
+	const onChangeSort = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		setIsDescending((prev) => !prev)
+	}
+
+	const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		movePosition()
+	}
 
 	const onValueChange = React.useCallback(
 		(value: string) => {
@@ -46,7 +66,34 @@ const ListCCTV: React.FC = () => {
 
 	return (
 		<div>
-			<div>Search</div>
+			<div className="flex gap-3 p-3">
+				<Input
+					className="w-full"
+					icon={Search}
+					iconProps={{
+						behavior: 'prepend',
+					}}
+					placeholder="Search..."
+				/>
+				<Button
+					variant="outline"
+					type="button"
+					size="icon"
+					className="flex-shrink-0"
+					onClick={onChangeSort}
+				>
+					{isDescending ? <ArrowUpNarrowWide /> : <ArrowDownNarrowWide />}
+				</Button>
+				<Button
+					variant="outline"
+					type="button"
+					size="icon"
+					className="flex-shrink-0"
+					onClick={onReset}
+				>
+					{active ? <Pin /> : <RotateCcw />}
+				</Button>
+			</div>
 			<ScrollArea type="always" className="h-screen p-3 pr-5">
 				<RadioGroup
 					className="relative"

@@ -11,4 +11,11 @@ export interface IMapsContext {
 	error?: string | null
 	setActive: (cctv: CCTV) => void
 	deactivate: () => void
+	movePosition: () => void
+}
+
+export interface IMapsMove {
+	longitude: number
+	latitude: number
+	zoom?: number
 }
