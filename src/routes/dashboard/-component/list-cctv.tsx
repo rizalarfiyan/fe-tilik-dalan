@@ -1,38 +1,20 @@
-import type { CCTV } from '@/types/cctv'
 import Typography from '@components/typography'
 import { Label } from '@components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@components/ui/radio-group'
 import { ScrollArea } from '@components/ui/scroll-area'
+import useMaps from '@hooks/use-maps'
 import * as React from 'react'
-import type { MapRef } from 'react-map-gl'
 
-interface ListCCTVProps {
-	cctv: CCTV[]
-	mapRef: React.RefObject<MapRef | null>
-}
+const ListCCTV: React.FC = () => {
+	const { cctv, active, setActive } = useMaps()
 
-const ListCCTV: React.FC<ListCCTVProps> = ({ cctv, mapRef }) => {
 	const onValueChange = React.useCallback(
 		(value: string) => {
 			const current = cctv.find((val) => val.id === value)
 			if (!current) return
-
-			const { id, longitude, latitude } = current
-			const activeMarker = document.querySelectorAll('svg[data-active="true"]')
-			for (const marker of activeMarker) {
-				marker.setAttribute('data-active', 'false')
-			}
-
-			const marker = document.querySelector(`svg[data-marker-id="${id}"]`)
-			marker?.setAttribute('data-active', 'true')
-
-			mapRef.current?.flyTo({
-				center: [longitude, latitude],
-				zoom: 17,
-				duration: 2000,
-			})
+			setActive(current)
 		},
-		[cctv],
+		[cctv, setActive],
 	)
 
 	const lists = React.useMemo(() => {
@@ -54,7 +36,7 @@ const ListCCTV: React.FC<ListCCTVProps> = ({ cctv, mapRef }) => {
 						<div className="flex-1">
 							<Typography as="h3" className="line-clamp-2 leading-tight">
 								{val.title}
-							</Typography>{' '}
+							</Typography>
 						</div>
 					</Label>
 				</div>
@@ -64,8 +46,13 @@ const ListCCTV: React.FC<ListCCTVProps> = ({ cctv, mapRef }) => {
 
 	return (
 		<div>
-			<ScrollArea className="h-screen p-3 pr-5">
-				<RadioGroup className="relative" onValueChange={onValueChange}>
+			<div>Search</div>
+			<ScrollArea type="always" className="h-screen p-3 pr-5">
+				<RadioGroup
+					className="relative"
+					onValueChange={onValueChange}
+					value={active?.id ?? ''}
+				>
 					{lists}
 				</RadioGroup>
 			</ScrollArea>
