@@ -10,7 +10,7 @@ import * as React from 'react'
 import { Marker as MapMarker } from 'react-map-gl'
 import MarkerIcon from './marker-icon'
 
-const Marker: React.FC<CCTV> = ({ latitude, longitude, title, link }) => {
+const Marker: React.FC<CCTV> = ({ id, latitude, longitude, title, link }) => {
 	const [isOpen, setIsOpen] = React.useState(false)
 
 	return (
@@ -37,7 +37,7 @@ const Marker: React.FC<CCTV> = ({ latitude, longitude, title, link }) => {
 					setIsOpen(true)
 				}}
 			>
-				<MarkerIcon />
+				<MarkerIcon data-marker-id={id} data-active="false" />
 			</MapMarker>
 		</>
 	)

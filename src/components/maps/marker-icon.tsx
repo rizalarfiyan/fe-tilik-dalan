@@ -1,17 +1,18 @@
 import type React from 'react'
 
-interface MarkerIconProps {
+interface MarkerIconProps
+	extends Omit<React.SVGProps<SVGSVGElement>, 'viewBox' | 'xmlns'> {
 	size?: number
 }
 
-const MarkerIcon: React.FC<MarkerIconProps> = ({ size = 32 }) => {
+const MarkerIcon: React.FC<MarkerIconProps> = ({ size = 32, ...props }) => {
 	return (
 		<svg
 			width={size}
 			height={size}
 			viewBox="0 0 24 24"
 			xmlns="http://www.w3.org/2000/svg"
-			className="fill-red-500"
+			{...props}
 		>
 			<path d="M20.69 8.69c0 5.95-7.78 14.68-8.11 15.05a.8.8 0 0 1-1.16 0c-.33-.37-8.12-9.1-8.12-15.04A8.7 8.7 0 0 1 12 0a8.7 8.7 0 0 1 8.69 8.69" />
 			<path

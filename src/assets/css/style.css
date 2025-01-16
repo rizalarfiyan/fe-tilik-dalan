@@ -79,3 +79,11 @@
 		filter: blur(118px);
 	}
 }
+
+svg[data-active="true"] {
+	@apply fill-emerald-500;
+}
+
+svg[data-active="false"] {
+	@apply fill-primary;
+}

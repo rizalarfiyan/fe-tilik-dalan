@@ -7,5 +7,10 @@ export interface CCTV {
 	width: number
 	height: number
 	aspect: string
-	image: string
+	image: CCTVImage
+}
+
+export interface CCTVImage {
+	src: string
+	thumb: string
 }
