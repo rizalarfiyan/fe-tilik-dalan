@@ -1,10 +1,10 @@
-import type { BaseResponse } from '@/types/api'
-import useAxios from '@hooks/use-axios'
 import * as React from 'react'
 import type { MapRef } from 'react-map-gl'
 import type { IMapsContext, IMapsMove } from '@/types/maps'
-import type { CCTV } from '@/types/cctv'
 import { DEFAULT_MAP, DEFAULT_ZOOM_MARKER } from '@constants'
+import useDashboard from '@hooks/use-dashboard'
+import { Button } from '@components/ui/button'
+import { MapPin, Pin } from 'lucide-react'
 
 export const MapsContext = React.createContext<IMapsContext | null>(null)
 
@@ -22,17 +22,23 @@ const activeMarker = (id: string) => {
 }
 
 const MapsProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-	const api = useAxios<BaseResponse<IMapsContext['cctv']>>('/cctv')
+	const { active, setAction } = useDashboard()
 	const mapRef = React.useRef<MapRef>(null)
-	const [active, setActive] = React.useState<CCTV | null>(null)
 
-	const state = React.useMemo(() => {
-		const { res, ...rest } = api
-		return {
-			cctv: res?.data ?? [],
-			...rest,
-		}
-	}, [api])
+	// TODO: this code is make duplicate render
+	React.useEffect(() => {
+		setAction(
+			<Button
+				variant="outline"
+				type="button"
+				size="icon"
+				className="flex-shrink-0"
+				onClick={onReset}
+			>
+				{active ? <Pin /> : <MapPin />}
+			</Button>,
+		)
+	}, [active, setAction])
 
 	const movePosition = React.useCallback(
 		(move?: IMapsMove) => {
@@ -65,26 +71,29 @@ const MapsProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 		[active],
 	)
 
+	const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		movePosition()
+	}
+
+	React.useEffect(() => {
+		if (!active) {
+			deactivateMarker()
+			movePosition(DEFAULT_MAP)
+			return
+		}
+		activeMarker(active.id)
+		movePosition(active)
+	}, [active, movePosition])
+
 	const value = React.useMemo(() => {
 		return {
 			mapRef,
-			active,
-			setActive: (cctv: CCTV) => {
-				activeMarker(cctv.id)
-				setActive(cctv)
-				movePosition(cctv)
-			},
-			deactivate: () => {
-				deactivateMarker()
-				setActive(null)
-				movePosition(DEFAULT_MAP)
-			},
 			movePosition,
-			...state,
 		}
-	}, [active, movePosition, state])
+	}, [movePosition])
 
 	return <MapsContext.Provider value={value}>{children}</MapsContext.Provider>
 }
 
-export default MapsProvider
+export default React.memo(MapsProvider)

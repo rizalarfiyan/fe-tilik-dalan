@@ -18,7 +18,6 @@
 		"noUncheckedSideEffectImports": true,
 		"baseUrl": ".",
 		"paths": {
-			"@types/*": ["src/types/*"],
 			"@components/*": ["src/components/*"],
 			"@css/*": ["src/assets/css/*"],
 			"@illustration/*": ["src/assets/illustration/*"],

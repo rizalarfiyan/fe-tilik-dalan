@@ -1,12 +1,12 @@
 import HlsPlayer from '@components/hls-player'
 import { Button } from '@components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card'
-import useMaps from '@hooks/use-maps'
+import useDashboard from '@hooks/use-dashboard'
 import { CirclePlay, X } from 'lucide-react'
 import * as React from 'react'
 
 function Detail() {
-	const { active, deactivate } = useMaps()
+	const { active, setActive } = useDashboard()
 	const [isPlaying, setIsPlaying] = React.useState(false)
 
 	// TODO: fix bugs for update the state isPlaying on active change
@@ -15,7 +15,7 @@ function Detail() {
 	const { title, image, link } = active
 	const onDeactivate = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
-		deactivate()
+		setActive(null)
 	}
 
 	const onPlay = (e: React.MouseEvent<HTMLButtonElement>) => {

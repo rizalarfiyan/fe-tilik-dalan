@@ -1,8 +1,8 @@
 import { Button } from '@components/ui/button'
 import useDebounce from '@hooks/use-debounce'
-import { ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react'
+import { ArrowDownAZ, ArrowUpAZ } from 'lucide-react'
 import * as React from 'react'
-import { Route } from '../index'
+import { Route } from '@/routes/dashboard'
 
 function Search() {
 	const navigate = Route.useNavigate()
@@ -32,7 +32,7 @@ function Search() {
 			className="flex-shrink-0"
 			onClick={onChangeSort}
 		>
-			{isDescending ? <ArrowUpNarrowWide /> : <ArrowDownNarrowWide />}
+			{isDescending ? <ArrowUpAZ /> : <ArrowDownAZ />}
 		</Button>
 	)
 }
