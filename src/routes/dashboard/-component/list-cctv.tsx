@@ -11,6 +11,8 @@ import * as React from 'react'
 import { Route } from '../index'
 import Order from './order'
 import Search from './search'
+import Logo from '@components/logo'
+import UserDropdown from '@components/user-dropdown'
 
 function ListCCTV() {
 	const params = Route.useSearch()
@@ -79,8 +81,9 @@ function ListCCTV() {
 	}, [results])
 
 	return (
-		<div>
-			<div className="flex gap-3 p-3 pb-0">
+		<div className="space-y-3 p-3">
+			<Logo />
+			<div className="flex gap-3">
 				<Search />
 				<Order />
 				<Button
@@ -93,15 +96,18 @@ function ListCCTV() {
 					{active ? <Pin /> : <MapPin />}
 				</Button>
 			</div>
-			<ScrollArea type="always" className="h-[calc(100vh_-_55px)] p-3 pr-5">
-				<RadioGroup
-					className="relative"
-					onValueChange={onValueChange}
-					value={active?.id ?? ''}
-				>
-					{lists}
-				</RadioGroup>
-			</ScrollArea>
+			<div className="rounded-md border pr-0 pl-3">
+				<ScrollArea type="always" className="h-[calc(100vh_-_200px)] py-3 pr-5">
+					<RadioGroup
+						className="relative"
+						onValueChange={onValueChange}
+						value={active?.id ?? ''}
+					>
+						{lists}
+					</RadioGroup>
+				</ScrollArea>
+			</div>
+			<UserDropdown />
 		</div>
 	)
 }
