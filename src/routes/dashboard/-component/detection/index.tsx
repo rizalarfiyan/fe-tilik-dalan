@@ -1,16 +1,46 @@
-import Player from '@components/player'
 import Typography from '@components/typography'
 import { Button } from '@components/ui/button'
 import { Card, CardContent, CardHeader } from '@components/ui/card'
 import useDashboard from '@hooks/use-dashboard'
+import useDetection from '@hooks/use-detection'
 import useOnce from '@hooks/use-once'
 import { Link } from '@tanstack/react-router'
 import { Activity, Image, MapIcon } from 'lucide-react'
-import type React from 'react'
+import * as  React from 'react'
+import { useEffect } from 'react'
 import LoadModel from './load-model'
 
+function Woke() {
+	const { model } = useDetection()
+	const [info, setInfo] = React.useState<object | null>(null)
+
+	useEffect(() => {
+		console.log('MODEL: ', model)
+		const loadInfo = async () => {
+			if (!model) return
+			const modelInfo = await model.info()
+			setInfo(modelInfo)
+		}
+
+		loadInfo()
+	}, [model])
+
+	return (
+		<div>
+			<code>
+				<pre>
+					{JSON.stringify(info ?? [], null, 2)}
+				</pre>
+			</code>
+		</div>
+	)
+}
+
+let i = 0
 function Detection() {
 	const { active, setPage, setActive } = useDashboard()
+
+	console.log('RENDER: ', i++)
 
 	useOnce(() => {
 		setPage({
@@ -40,17 +70,18 @@ function Detection() {
 				)}
 			</div>
 			<Card className="w-full max-w-4xl">
-				<CardHeader className="flex flex-row items-center justify-between space-y-0 border-b px-6 py-4">
+				<CardHeader className="flex flex-row items-center justify-between space-y-0 border-b p-6">
 					<div className="flex items-center gap-4">
 						<Activity className="size-5 text-primary" />
 						<Typography as="h3" variant="h4">
 							{active?.title ?? 'Detect a image'}
 						</Typography>
 					</div>
-					<div className="flex items-center justify-center gap-2 p-2">ok</div>
 				</CardHeader>
 				<CardContent className="pt-6">
-					<LoadModel />
+					<LoadModel>
+						<Woke />
+					</LoadModel>
 				</CardContent>
 			</Card>
 		</div>

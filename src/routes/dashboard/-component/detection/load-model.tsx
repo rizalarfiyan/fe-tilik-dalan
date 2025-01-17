@@ -2,7 +2,10 @@ import Logo from '@components/logo'
 import Typography from '@components/typography'
 import { Button } from '@components/ui/button'
 import { Progress } from '@components/ui/progress'
+import { MODEL_CLASSES } from '@constants'
+import useModel from '@hooks/use-detection'
 import { cn } from '@lib/utils'
+import Yolo from '@lib/yolo'
 import { Loader2, RefreshCw, TriangleAlert } from 'lucide-react'
 import * as React from 'react'
 
@@ -30,18 +33,57 @@ interface IProgress {
 	reason: string
 }
 
-function LoadModel() {
+const MODEL_URL = `${window.location.origin}/models/yolov8s/model.json`
+
+const LoadModel: React.FC<React.PropsWithChildren> = ({ children }) => {
+	const { model, setModel } = useModel()
+	const modelRef = React.useRef<Yolo | null>(null)
 	const [error, setError] = React.useState<string | null>(null)
 	const [progress, setProgress] = React.useState<IProgress | null>(null)
 
 	React.useEffect(() => {
-		setError('Something went wrong! Please try again later.')
-		setProgress(null)
-		// setError(null)
-		// setProgress({ percentage: 50, reason: 'Downloading model' })
-	}, [])
+		if (modelRef.current) return
 
-	if (progress) {
+		const loadModel = async () => {
+			try {
+				modelRef.current = await Yolo.loadModel({
+					modelPath: MODEL_URL,
+					classes: MODEL_CLASSES,
+					onProgress: setProgress,
+				})
+
+				setModel(modelRef.current)
+			} catch {
+				setError('Failed to load model. Please try again later.')
+			} finally {
+				setProgress(null)
+			}
+		}
+
+		loadModel()
+		return () => {
+			modelRef.current?.dispose()
+			modelRef.current = null
+			setModel(null)
+		}
+	}, [setModel])
+
+	const handleReloadModel = async (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		if (!modelRef.current) return
+
+		try {
+			await modelRef.current.removeModel()
+			const newModel = await modelRef.current.reloadModel()
+			modelRef.current = newModel
+			setModel(newModel)
+		} catch (error) {
+			console.error('Error loading model:', error)
+			setError('Failed to reload model. Please try again later.')
+		}
+	}
+
+	if (progress || !model) {
 		return (
 			<Wrapper isLoading>
 				<Loader2 className="mx-auto size-12 animate-spin text-red-500" />
@@ -71,7 +113,11 @@ function LoadModel() {
 				<Logo />
 				<Typography variant="muted">{error}</Typography>
 				<div>
-					<Button className="mt-4 font-semibold" disabled={progress !== null}>
+					<Button
+						className="mt-4 font-semibold"
+						disabled={progress !== null}
+						onClick={handleReloadModel}
+					>
 						Reload model
 						<RefreshCw className="size-4" />
 					</Button>
@@ -80,7 +126,7 @@ function LoadModel() {
 		)
 	}
 
-	return 'DONE'
+	return children
 }
 
 export default LoadModel
