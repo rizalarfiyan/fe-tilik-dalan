@@ -1,5 +1,5 @@
 import DotLive from '@components/dot-live'
-import HlsPlayerWithControls from '@components/player'
+import Player from '@components/player'
 import { Badge } from '@components/ui/badge'
 import { Button } from '@components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card'
@@ -59,7 +59,7 @@ function Detail() {
 				</Button>
 			</div>
 			<CardContent className="space-y-3">
-				<HlsPlayerWithControls
+				<Player
 					playerRef={playerRef}
 					src={link}
 					thumbnail={image.thumb}
@@ -79,7 +79,7 @@ function Detail() {
 					</table>
 					<div className="flex w-full items-center justify-center">
 						<Button asChild>
-							<Link to="/dashboard/analytic">
+							<Link to="/dashboard/detection">
 								<ScanQrCode className="mr-1 size-5" />
 								<span>Detect Now</span>
 							</Link>

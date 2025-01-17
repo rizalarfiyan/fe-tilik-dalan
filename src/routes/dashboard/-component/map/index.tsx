@@ -6,6 +6,9 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import * as React from 'react'
 import ReactMapGl, { NavigationControl, ScaleControl } from 'react-map-gl'
 import Detail from './detail'
+import { Image } from 'lucide-react'
+import { Button } from '@components/ui/button'
+import { Link } from '@tanstack/react-router'
 
 function Maps() {
 	const { cctv, active } = useDashboard()
@@ -18,7 +21,19 @@ function Maps() {
 	}, [cctv])
 
 	return (
-		<div className="flex h-full min-h-screen w-full">
+		<div className="relative flex h-full min-h-screen w-full">
+			{!active && (
+				<Button
+					variant="outline"
+					className="absolute top-4 left-4 z-[1]"
+					asChild
+				>
+					<Link to="/dashboard/detection">
+						<Image className="size-5" />
+						Detect Image
+					</Link>
+				</Button>
+			)}
 			<Detail />
 			<ReactMapGl
 				ref={mapRef}

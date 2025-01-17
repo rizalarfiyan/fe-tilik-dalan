@@ -21,7 +21,7 @@ import { Route as AuthLoginImport } from './routes/_auth/login'
 // Create Virtual Routes
 
 const IndexLazyImport = createFileRoute('/')()
-const DashboardAnalyticLazyImport = createFileRoute('/dashboard/analytic')()
+const DashboardDetectionLazyImport = createFileRoute('/dashboard/detection')()
 
 // Create/Update Routes
 
@@ -50,12 +50,12 @@ const DashboardIndexRoute = DashboardIndexImport.update({
 	import('./routes/dashboard/index.lazy').then((d) => d.Route),
 )
 
-const DashboardAnalyticLazyRoute = DashboardAnalyticLazyImport.update({
-	id: '/analytic',
-	path: '/analytic',
+const DashboardDetectionLazyRoute = DashboardDetectionLazyImport.update({
+	id: '/detection',
+	path: '/detection',
 	getParentRoute: () => DashboardRoute,
 } as any).lazy(() =>
-	import('./routes/dashboard/analytic.lazy').then((d) => d.Route),
+	import('./routes/dashboard/detection.lazy').then((d) => d.Route),
 )
 
 const AuthLoginRoute = AuthLoginImport.update({
@@ -96,11 +96,11 @@ declare module '@tanstack/react-router' {
 			preLoaderRoute: typeof AuthLoginImport
 			parentRoute: typeof AuthImport
 		}
-		'/dashboard/analytic': {
-			id: '/dashboard/analytic'
-			path: '/analytic'
-			fullPath: '/dashboard/analytic'
-			preLoaderRoute: typeof DashboardAnalyticLazyImport
+		'/dashboard/detection': {
+			id: '/dashboard/detection'
+			path: '/detection'
+			fullPath: '/dashboard/detection'
+			preLoaderRoute: typeof DashboardDetectionLazyImport
 			parentRoute: typeof DashboardImport
 		}
 		'/dashboard/': {
@@ -126,12 +126,12 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface DashboardRouteChildren {
-	DashboardAnalyticLazyRoute: typeof DashboardAnalyticLazyRoute
+	DashboardDetectionLazyRoute: typeof DashboardDetectionLazyRoute
 	DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
-	DashboardAnalyticLazyRoute: DashboardAnalyticLazyRoute,
+	DashboardDetectionLazyRoute: DashboardDetectionLazyRoute,
 	DashboardIndexRoute: DashboardIndexRoute,
 }
 
@@ -144,7 +144,7 @@ export interface FileRoutesByFullPath {
 	'': typeof AuthRouteWithChildren
 	'/dashboard': typeof DashboardRouteWithChildren
 	'/login': typeof AuthLoginRoute
-	'/dashboard/analytic': typeof DashboardAnalyticLazyRoute
+	'/dashboard/detection': typeof DashboardDetectionLazyRoute
 	'/dashboard/': typeof DashboardIndexRoute
 }
 
@@ -152,7 +152,7 @@ export interface FileRoutesByTo {
 	'/': typeof IndexLazyRoute
 	'': typeof AuthRouteWithChildren
 	'/login': typeof AuthLoginRoute
-	'/dashboard/analytic': typeof DashboardAnalyticLazyRoute
+	'/dashboard/detection': typeof DashboardDetectionLazyRoute
 	'/dashboard': typeof DashboardIndexRoute
 }
 
@@ -162,7 +162,7 @@ export interface FileRoutesById {
 	'/_auth': typeof AuthRouteWithChildren
 	'/dashboard': typeof DashboardRouteWithChildren
 	'/_auth/login': typeof AuthLoginRoute
-	'/dashboard/analytic': typeof DashboardAnalyticLazyRoute
+	'/dashboard/detection': typeof DashboardDetectionLazyRoute
 	'/dashboard/': typeof DashboardIndexRoute
 }
 
@@ -173,17 +173,17 @@ export interface FileRouteTypes {
 		| ''
 		| '/dashboard'
 		| '/login'
-		| '/dashboard/analytic'
+		| '/dashboard/detection'
 		| '/dashboard/'
 	fileRoutesByTo: FileRoutesByTo
-	to: '/' | '' | '/login' | '/dashboard/analytic' | '/dashboard'
+	to: '/' | '' | '/login' | '/dashboard/detection' | '/dashboard'
 	id:
 		| '__root__'
 		| '/'
 		| '/_auth'
 		| '/dashboard'
 		| '/_auth/login'
-		| '/dashboard/analytic'
+		| '/dashboard/detection'
 		| '/dashboard/'
 	fileRoutesById: FileRoutesById
 }
@@ -227,7 +227,7 @@ export const routeTree = rootRoute
     "/dashboard": {
       "filePath": "dashboard.tsx",
       "children": [
-        "/dashboard/analytic",
+        "/dashboard/detection",
         "/dashboard/"
       ]
     },
@@ -235,8 +235,8 @@ export const routeTree = rootRoute
       "filePath": "_auth/login.tsx",
       "parent": "/_auth"
     },
-    "/dashboard/analytic": {
-      "filePath": "dashboard/analytic.lazy.tsx",
+    "/dashboard/detection": {
+      "filePath": "dashboard/detection.lazy.tsx",
       "parent": "/dashboard"
     },
     "/dashboard/": {

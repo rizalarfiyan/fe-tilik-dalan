@@ -10,11 +10,11 @@ import {
 import useAuth from '@hooks/use-auth'
 import { Link } from '@tanstack/react-router'
 import {
-	ChartLine,
 	ChevronsUpDown,
 	Home,
 	LayoutDashboard,
 	LogOut,
+	ScanQrCode,
 } from 'lucide-react'
 import UserInfo from './user-info'
 import useDashboard from '@hooks/use-dashboard'
@@ -65,10 +65,10 @@ function UserDropdown() {
 								Dashboard
 							</DropdownMenuItem>
 						</Link>
-						<Link to="/dashboard/analytic">
+						<Link to="/dashboard/detection">
 							<DropdownMenuItem className="cursor-pointer">
-								<ChartLine />
-								Analytics
+								<ScanQrCode />
+								Detection
 							</DropdownMenuItem>
 						</Link>
 					</DropdownMenuGroup>
