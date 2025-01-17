@@ -16,7 +16,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
 	return (
 		<div
 			className={cn(
-				'fixed inset-0 mx-auto flex h-full min-h-screen w-full items-center justify-center bg-background',
+				'fixed inset-0 z-50 mx-auto flex h-full min-h-screen w-full items-center justify-center bg-background',
 				className,
 			)}
 			{...rest}

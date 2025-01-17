@@ -12,7 +12,6 @@ const router = createRouter({
 	defaultPreload: 'intent',
 	defaultPreloadStaleTime: 0,
 	defaultPendingMinMs: 0,
-	defaultPendingComponent: () => <LoadingScreen reason="Collecting data..." />,
 })
 
 declare module '@tanstack/react-router' {

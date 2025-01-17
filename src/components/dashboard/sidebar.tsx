@@ -10,6 +10,7 @@ import { Link } from '@tanstack/react-router'
 import * as React from 'react'
 import { Button } from '@components/ui/button'
 import { MapPin, Pin } from 'lucide-react'
+import { DEFAULT_MAP } from '@constants'
 
 function Sidebar() {
 	const { isLoading, error, active, page } = useDashboard()
@@ -24,7 +25,7 @@ function Sidebar() {
 				return
 			}
 
-			page.moveMap?.()
+			page.moveMap?.(DEFAULT_MAP)
 		},
 		[page, active],
 	)
