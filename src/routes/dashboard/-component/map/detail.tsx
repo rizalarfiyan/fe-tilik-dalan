@@ -1,26 +1,19 @@
-import HlsPlayer from '@components/hls-player'
+import HlsPlayerWithControls from '@components/player'
 import { Button } from '@components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card'
 import useDashboard from '@hooks/use-dashboard'
-import { CirclePlay, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import * as React from 'react'
 
 function Detail() {
 	const { active, setActive } = useDashboard()
-	const [isPlaying, setIsPlaying] = React.useState(false)
-
-	// TODO: fix bugs for update the state isPlaying on active change
+	const playerRef = React.useRef<HTMLVideoElement | null>(null)
 	if (!active) return null
 
-	const { title, image, link } = active
+	const { title, image, link, aspect } = active
 	const onDeactivate = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		setActive(null)
-	}
-
-	const onPlay = (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault()
-		setIsPlaying(true)
 	}
 
 	return (
@@ -40,25 +33,37 @@ function Detail() {
 				</Button>
 			</div>
 			<CardContent>
-				<div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-md bg-slate-200">
-					{isPlaying ? (
-						<HlsPlayer className="h-full w-full" src={link} autoPlay controls />
-					) : (
-						<>
-							<img src={image.src} alt={title} className="object-cover" />
-							<div className="absolute inset-0 h-full w-full bg-slate-700/80" />
-							<Button
-								variant="outline"
-								type="button"
-								size="icon"
-								className="absolute p-6 text-primary"
-								onClick={onPlay}
-							>
-								<CirclePlay className="!size-8" />
-							</Button>
-						</>
-					)}
-				</div>
+				<HlsPlayerWithControls
+					playerRef={playerRef}
+					src={link}
+					thumbnail={image.thumb}
+					aspect={aspect}
+					muted
+				/>
+				{/* {isPlaying ? (
+					<div className='relative flex w-full items-center justify-center overflow-hidden rounded-md bg-slate-200'>
+						<HlsPlayerWithControls
+							playerRef={playerRef}
+							src={link}
+							autoPlay
+							muted
+						/>
+					</div>
+				) : (
+					<div className="relative flex w-full items-center justify-center overflow-hidden rounded-md bg-slate-200">
+						<img src={image.src} alt={title} className="object-cover" />
+						<div className="absolute inset-0 h-full w-full bg-slate-700/80" />
+						<Button
+							variant="outline"
+							type="button"
+							size="icon"
+							className="absolute p-6 text-primary"
+							onClick={onPlay}
+						>
+							<CirclePlay className="!size-8" />
+						</Button>
+					</div>
+				)} */}
 			</CardContent>
 		</Card>
 	)
