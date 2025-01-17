@@ -40,7 +40,7 @@ function HlsPlayer({
 						playerRef?.current
 							?.play()
 							.catch(() =>
-								console.log(
+								console.warn(
 									'Unable to autoplay prior to user interaction with the dom.',
 								),
 							)

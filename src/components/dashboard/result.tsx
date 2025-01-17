@@ -15,7 +15,7 @@ const Result: React.FC<ResultProps> = ({ results }) => {
 				<RadioGroupItem value={val.id} id={val.id} className="peer sr-only" />
 				<Label
 					htmlFor={val.id}
-					className="flex w-full cursor-pointer items-center justify-between gap-4 overflow-hidden rounded-md border-2 border-muted bg-popover p-2 transition-colors duration-300 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+					className="flex w-full cursor-pointer items-center justify-between gap-3 overflow-hidden rounded-md border-2 border-muted bg-popover p-2 transition-colors duration-300 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
 				>
 					<div className="aspect-video h-14 w-auto overflow-hidden rounded-md border border-border bg-slate-200">
 						<img

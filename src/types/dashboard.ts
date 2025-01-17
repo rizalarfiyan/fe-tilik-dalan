@@ -1,5 +1,10 @@
-import type React from 'react'
 import type { CCTV } from './cctv'
+import type { IMapsMove } from './maps'
+
+export interface ILoadPage {
+	isLoading: boolean
+	moveMap?: (move?: IMapsMove) => void
+}
 
 export interface IDashboardContext {
 	cctv: CCTV[]
@@ -7,6 +12,6 @@ export interface IDashboardContext {
 	isLoading: boolean
 	error?: string | null
 	setActive: (cctv: CCTV | null) => void
-	action: React.ReactNode | null
-	setAction: (action: React.ReactNode | null) => void
+	page: ILoadPage
+	setPage: (page: ILoadPage) => void
 }

@@ -12,7 +12,7 @@ interface IndicatorProps {
 	textClassName?: string
 }
 
-const Indicator: React.FC<IndicatorProps> = ({
+export const Indicator: React.FC<IndicatorProps> = ({
 	icon: Icon,
 	message,
 	className,

@@ -1,10 +1,9 @@
-import * as React from 'react'
-import type { MapRef } from 'react-map-gl'
 import type { IMapsContext, IMapsMove } from '@/types/maps'
 import { DEFAULT_MAP, DEFAULT_ZOOM_MARKER } from '@constants'
 import useDashboard from '@hooks/use-dashboard'
-import { Button } from '@components/ui/button'
-import { MapPin, Pin } from 'lucide-react'
+import useOnce from '@hooks/use-once'
+import * as React from 'react'
+import type { MapRef } from 'react-map-gl'
 
 export const MapsContext = React.createContext<IMapsContext | null>(null)
 
@@ -22,23 +21,8 @@ const activeMarker = (id: string) => {
 }
 
 const MapsProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-	const { active, setAction } = useDashboard()
+	const { active, setPage } = useDashboard()
 	const mapRef = React.useRef<MapRef>(null)
-
-	// TODO: this code is make duplicate render
-	React.useEffect(() => {
-		setAction(
-			<Button
-				variant="outline"
-				type="button"
-				size="icon"
-				className="flex-shrink-0"
-				onClick={onReset}
-			>
-				{active ? <Pin /> : <MapPin />}
-			</Button>,
-		)
-	}, [active, setAction])
 
 	const movePosition = React.useCallback(
 		(move?: IMapsMove) => {
@@ -71,10 +55,12 @@ const MapsProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 		[active],
 	)
 
-	const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault()
-		movePosition()
-	}
+	useOnce(() => {
+		setPage({
+			isLoading: false,
+			moveMap: movePosition,
+		})
+	})
 
 	React.useEffect(() => {
 		if (!active) {

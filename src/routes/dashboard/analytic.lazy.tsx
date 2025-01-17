@@ -1,4 +1,5 @@
 import useDashboard from '@hooks/use-dashboard'
+import useOnce from '@hooks/use-once'
 import { createLazyFileRoute } from '@tanstack/react-router'
 
 export const Route = createLazyFileRoute('/dashboard/analytic')({
@@ -6,7 +7,13 @@ export const Route = createLazyFileRoute('/dashboard/analytic')({
 })
 
 function RouteComponent() {
-	const { active } = useDashboard()
+	const { active, setPage } = useDashboard()
+
+	useOnce(() => {
+		setPage({
+			isLoading: false,
+		})
+	})
 
 	return (
 		<div>

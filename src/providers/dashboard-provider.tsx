@@ -1,6 +1,6 @@
 import type { BaseResponse } from '@/types/api'
 import type { CCTV } from '@/types/cctv'
-import type { IDashboardContext } from '@/types/dashboard'
+import type { IDashboardContext, ILoadPage } from '@/types/dashboard'
 import useAxios from '@hooks/use-axios'
 import * as React from 'react'
 
@@ -11,19 +11,21 @@ export const DashboardContext = React.createContext<IDashboardContext | null>(
 const DashboardProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const api = useAxios<BaseResponse<IDashboardContext['cctv']>>('/cctv')
 	const [active, setActive] = React.useState<CCTV | null>(null)
-	const [action, setAction] = React.useState<React.ReactNode | null>(null)
+	const [page, setPage] = React.useState<ILoadPage>({
+		isLoading: true,
+	})
 
 	const value = React.useMemo((): IDashboardContext => {
 		const { res, ...rest } = api
 		return {
+			page,
+			setPage,
 			active,
-			action,
 			setActive,
-			setAction,
 			cctv: res?.data ?? [],
 			...rest,
 		}
-	}, [active, api, action])
+	}, [active, api, page])
 
 	return (
 		<DashboardContext.Provider value={value}>

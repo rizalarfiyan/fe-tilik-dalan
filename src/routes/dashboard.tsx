@@ -1,7 +1,6 @@
-import Sidebar from '@components/dashboard/sidebar'
+import Layout from '@components/dashboard/layout'
 import DashboardProvider from '@providers/dashboard-provider'
-import { Outlet, redirect } from '@tanstack/react-router'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
@@ -21,12 +20,9 @@ export const Route = createFileRoute('/dashboard')({
 	component: () => {
 		return (
 			<DashboardProvider>
-				<div className="flex h-full min-h-screen w-full">
-					<Sidebar />
-					<div className="relative w-full">
-						<Outlet />
-					</div>
-				</div>
+				<Layout>
+					<Outlet />
+				</Layout>
 			</DashboardProvider>
 		)
 	},
