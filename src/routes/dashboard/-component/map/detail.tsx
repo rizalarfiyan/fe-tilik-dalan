@@ -1,8 +1,11 @@
+import DotLive from '@components/dot-live'
 import HlsPlayerWithControls from '@components/player'
+import { Badge } from '@components/ui/badge'
 import { Button } from '@components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card'
 import useDashboard from '@hooks/use-dashboard'
-import { X } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
+import { ScanQrCode, X } from 'lucide-react'
 import * as React from 'react'
 
 function Detail() {
@@ -10,11 +13,34 @@ function Detail() {
 	const playerRef = React.useRef<HTMLVideoElement | null>(null)
 	if (!active) return null
 
-	const { title, image, link, aspect } = active
+	const { title, image, link, aspect, width, height } = active
 	const onDeactivate = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		setActive(null)
 	}
+
+	const tables = [
+		{
+			id: 1,
+			label: 'Status',
+			value: (
+				<Badge variant="outline" className="">
+					<DotLive color="red" className="mr-2" />
+					Live
+				</Badge>
+			),
+		},
+		{
+			id: 2,
+			label: 'Resolution',
+			value: `${width}x${height}`,
+		},
+		{
+			id: 3,
+			label: 'Aspect Ratio',
+			value: aspect,
+		},
+	]
 
 	return (
 		<Card className="absolute top-4 left-4 z-10 w-full max-w-xl">
@@ -32,7 +58,7 @@ function Detail() {
 					<X />
 				</Button>
 			</div>
-			<CardContent>
+			<CardContent className="space-y-3">
 				<HlsPlayerWithControls
 					playerRef={playerRef}
 					src={link}
@@ -40,30 +66,26 @@ function Detail() {
 					aspect={aspect}
 					muted
 				/>
-				{/* {isPlaying ? (
-					<div className='relative flex w-full items-center justify-center overflow-hidden rounded-md bg-slate-200'>
-						<HlsPlayerWithControls
-							playerRef={playerRef}
-							src={link}
-							autoPlay
-							muted
-						/>
-					</div>
-				) : (
-					<div className="relative flex w-full items-center justify-center overflow-hidden rounded-md bg-slate-200">
-						<img src={image.src} alt={title} className="object-cover" />
-						<div className="absolute inset-0 h-full w-full bg-slate-700/80" />
-						<Button
-							variant="outline"
-							type="button"
-							size="icon"
-							className="absolute p-6 text-primary"
-							onClick={onPlay}
-						>
-							<CirclePlay className="!size-8" />
+				<div className="flex items-center">
+					<table className="w-full">
+						<tbody>
+							{tables.map(({ id, label, value }) => (
+								<tr key={id}>
+									<td className="w-32 py-0.5 font-semibold">{label}</td>
+									<td className="py-1">: {value}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+					<div className="flex w-full items-center justify-center">
+						<Button asChild>
+							<Link to="/dashboard/analytic">
+								<ScanQrCode className="mr-1 size-5" />
+								<span>Detect Now</span>
+							</Link>
 						</Button>
 					</div>
-				)} */}
+				</div>
 			</CardContent>
 		</Card>
 	)

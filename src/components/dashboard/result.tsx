@@ -1,7 +1,7 @@
+import type { CCTV } from '@/types/cctv'
 import Typography from '@components/typography'
 import { Label } from '@components/ui/label'
 import { RadioGroupItem } from '@components/ui/radio-group'
-import type { CCTV } from '@/types/cctv'
 import * as React from 'react'
 
 interface ResultProps {
@@ -25,7 +25,11 @@ const Result: React.FC<ResultProps> = ({ results }) => {
 						/>
 					</div>
 					<div className="flex-1">
-						<Typography as="h3" className="line-clamp-2 leading-tight">
+						<Typography
+							as="h3"
+							variant="large"
+							className="line-clamp-2 text-base leading-tight"
+						>
 							{val.title}
 						</Typography>
 					</div>
