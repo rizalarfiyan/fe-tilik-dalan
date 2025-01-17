@@ -55,7 +55,7 @@ function Detail() {
 					className="m-4 flex-shrink-0"
 					onClick={onDeactivate}
 				>
-					<X />
+					<X className="size-5" />
 				</Button>
 			</div>
 			<CardContent className="space-y-3">

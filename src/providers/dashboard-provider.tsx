@@ -11,6 +11,7 @@ export const DashboardContext = React.createContext<IDashboardContext | null>(
 const DashboardProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const api = useAxios<BaseResponse<IDashboardContext['cctv']>>('/cctv')
 	const [active, setActive] = React.useState<CCTV | null>(null)
+	const [isDisable, setIsDisable] = React.useState<boolean>(false)
 	const [page, setPage] = React.useState<ILoadPage>({
 		isLoading: true,
 	})
@@ -23,9 +24,11 @@ const DashboardProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 			active,
 			setActive,
 			cctv: res?.data ?? [],
+			isDisable,
+			setIsDisable,
 			...rest,
 		}
-	}, [active, api, page])
+	}, [active, api, page, isDisable])
 
 	return (
 		<DashboardContext.Provider value={value}>

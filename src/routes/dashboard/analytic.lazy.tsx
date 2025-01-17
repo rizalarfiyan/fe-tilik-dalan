@@ -7,7 +7,7 @@ export const Route = createLazyFileRoute('/dashboard/analytic')({
 })
 
 function RouteComponent() {
-	const { active, setPage } = useDashboard()
+	const { active, setPage, setIsDisable } = useDashboard()
 
 	useOnce(() => {
 		setPage({
@@ -20,6 +20,12 @@ function RouteComponent() {
 			<code>
 				<pre>{JSON.stringify(active, null, 2)}</pre>
 			</code>
+			<button type="button" onClick={() => setIsDisable(true)}>
+				Disable
+			</button>
+			<button type="button" onClick={() => setIsDisable(false)}>
+				Enable
+			</button>
 		</div>
 	)
 }

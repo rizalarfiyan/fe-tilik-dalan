@@ -14,4 +14,6 @@ export interface IDashboardContext {
 	setActive: (cctv: CCTV | null) => void
 	page: ILoadPage
 	setPage: (page: ILoadPage) => void
+	isDisable: boolean
+	setIsDisable: (isDisable: boolean) => void
 }

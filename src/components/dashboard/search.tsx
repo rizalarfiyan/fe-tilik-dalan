@@ -3,8 +3,10 @@ import useDebounce from '@hooks/use-debounce'
 import { SearchIcon } from 'lucide-react'
 import * as React from 'react'
 import { Route } from '@/routes/dashboard'
+import useDashboard from '@hooks/use-dashboard'
 
 function Search() {
+	const { isDisable } = useDashboard()
 	const navigate = Route.useNavigate()
 	const param = Route.useSearch()
 	const [search, setSearch] = React.useState(param.search ?? '')
@@ -34,6 +36,7 @@ function Search() {
 			placeholder="Search..."
 			value={search}
 			onChange={onChange}
+			disabled={isDisable}
 		/>
 	)
 }

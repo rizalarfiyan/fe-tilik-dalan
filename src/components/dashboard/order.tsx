@@ -3,8 +3,10 @@ import useDebounce from '@hooks/use-debounce'
 import { ArrowDownAZ, ArrowUpAZ } from 'lucide-react'
 import * as React from 'react'
 import { Route } from '@/routes/dashboard'
+import useDashboard from '@hooks/use-dashboard'
 
 function Search() {
+	const { isDisable } = useDashboard()
 	const navigate = Route.useNavigate()
 	const param = Route.useSearch()
 	const [isDescending, setIsDescending] = React.useState(param.order === 'desc')
@@ -31,8 +33,13 @@ function Search() {
 			size="icon"
 			className="flex-shrink-0"
 			onClick={onChangeSort}
+			disabled={isDisable}
 		>
-			{isDescending ? <ArrowUpAZ /> : <ArrowDownAZ />}
+			{isDescending ? (
+				<ArrowUpAZ className="size-5" />
+			) : (
+				<ArrowDownAZ className="size-5" />
+			)}
 		</Button>
 	)
 }

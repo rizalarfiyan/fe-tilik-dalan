@@ -9,7 +9,7 @@ export const KEY_ACCESS_TOKEN = 'access_token'
 export const DEFAULT_ZOOM_MARKER = 17
 export const DEFAULT_MAP: IMapsMove = {
 	latitude: -7.8,
-	longitude: 110.37,
+	longitude: 110.38,
 	zoom: 13,
 }
 

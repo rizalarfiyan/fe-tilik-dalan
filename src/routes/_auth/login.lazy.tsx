@@ -104,7 +104,7 @@ function Page() {
 					<div>
 						<Button asChild variant="outline" className="w-full p-6 text-base">
 							<a href={`${API_BASE_URL}/auth/google`}>
-								<GoogleIcon className="!size-6 mr-1" />
+								<GoogleIcon className="mr-1 size-6" />
 								<span>Login with Google</span>
 							</a>
 						</Button>

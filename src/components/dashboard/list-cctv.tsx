@@ -7,7 +7,7 @@ import Fuse from 'fuse.js'
 import type { CCTV } from '@/types/cctv'
 
 function ListCCTV() {
-	const { cctv, active, setActive } = useDashboard()
+	const { cctv, active, setActive, isDisable } = useDashboard()
 	const params = Route.useSearch()
 
 	const fuse = React.useMemo(
@@ -46,6 +46,7 @@ function ListCCTV() {
 			className="relative"
 			onValueChange={onValueChange}
 			value={active?.id ?? ''}
+			disabled={isDisable}
 		>
 			<Result results={results} />
 		</RadioGroup>

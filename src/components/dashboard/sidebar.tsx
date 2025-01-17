@@ -46,7 +46,11 @@ function Sidebar() {
 						className="flex-shrink-0"
 						onClick={onReset}
 					>
-						{active ? <Pin /> : <MapPin />}
+						{active ? (
+							<Pin className="size-5" />
+						) : (
+							<MapPin className="size-5" />
+						)}
 					</Button>
 				)}
 			</div>

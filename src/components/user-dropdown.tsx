@@ -17,21 +17,24 @@ import {
 	LogOut,
 } from 'lucide-react'
 import UserInfo from './user-info'
+import useDashboard from '@hooks/use-dashboard'
 
 function UserDropdown() {
+	const { isDisable } = useDashboard()
 	const { user } = useAuth()
 	if (!user) return null
 
 	return (
 		<div>
 			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
+				<DropdownMenuTrigger disabled={isDisable} asChild>
 					<button
 						type="button"
-						className="flex w-full items-center justify-between gap-2 rounded-md border p-2 text-left"
+						disabled={isDisable}
+						className="flex w-full items-center justify-between gap-2 rounded-md border p-2 pr-4 text-left disabled:cursor-not-allowed disabled:opacity-70"
 					>
 						<UserInfo {...user} />
-						<ChevronsUpDown className="ml-auto size-4" />
+						<ChevronsUpDown className="ml-auto size-5" />
 					</button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent

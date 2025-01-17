@@ -208,9 +208,9 @@ const ButtonPlayStop: React.FC<ButtonPlayStopProps> = ({
 				onClick={onClick}
 			>
 				{isPlaying ? (
-					<CircleStop className="!size-8" />
+					<CircleStop className="size-8" />
 				) : (
-					<CirclePlay className="!size-8" />
+					<CirclePlay className="size-8" />
 				)}
 			</Button>
 		</>
