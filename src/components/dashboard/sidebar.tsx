@@ -6,13 +6,16 @@ import UserDropdown from '@components/user-dropdown'
 import { ScrollArea } from '@components/ui/scroll-area'
 import StateApi from '@components/state-api'
 import ListCCTV from './list-cctv'
+import { Link } from '@tanstack/react-router'
 
 function Sidebar() {
 	const { action, isLoading, error } = useDashboard()
 
 	return (
-		<div className="w-full max-w-sm space-y-3 p-3">
-			<Logo />
+		<div className="flex w-full max-w-sm flex-col space-y-3 p-3">
+			<Link to="/" className="mx-auto inline-flex">
+				<Logo typographyClassName="underline underline-offset-[3px] decoration-[3px] decoration-primary" />
+			</Link>
 			<div className="flex gap-3">
 				<Search />
 				<Order />
