@@ -6,11 +6,11 @@ import useDashboard from '@hooks/use-dashboard'
 import useOnce from '@hooks/use-once'
 import { Link } from '@tanstack/react-router'
 import { Activity, Image, MapIcon } from 'lucide-react'
-import * as React from 'react'
+import type React from 'react'
+import LoadModel from './load-model'
 
 function Detection() {
 	const { active, setPage, setActive } = useDashboard()
-	const playerRef = React.useRef<HTMLVideoElement | null>(null)
 
 	useOnce(() => {
 		setPage({
@@ -50,15 +50,7 @@ function Detection() {
 					<div className="flex items-center justify-center gap-2 p-2">ok</div>
 				</CardHeader>
 				<CardContent className="pt-6">
-					{active && (
-						<Player
-							playerRef={playerRef}
-							src={active.link}
-							thumbnail={active.image.thumb}
-							aspect={active.aspect}
-							muted
-						/>
-					)}
+					<LoadModel />
 				</CardContent>
 			</Card>
 		</div>
