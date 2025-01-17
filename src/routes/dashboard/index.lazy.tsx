@@ -1,12 +1,12 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
-import Page from './-component/page'
+import Maps from './-component/map'
 import MapsProvider from '@providers/maps-provider'
 
 export const Route = createLazyFileRoute('/dashboard/')({
 	component: () => {
 		return (
 			<MapsProvider>
-				<Page />
+				<Maps />
 			</MapsProvider>
 		)
 	},

@@ -62,7 +62,7 @@ function UserDropdown() {
 								Dashboard
 							</DropdownMenuItem>
 						</Link>
-						<Link to="/dashboard">
+						<Link to="/dashboard/analytic">
 							<DropdownMenuItem className="cursor-pointer">
 								<ChartLine />
 								Analytics

@@ -21,6 +21,7 @@ import { Route as AuthLoginImport } from './routes/_auth/login'
 // Create Virtual Routes
 
 const IndexLazyImport = createFileRoute('/')()
+const DashboardAnalyticLazyImport = createFileRoute('/dashboard/analytic')()
 
 // Create/Update Routes
 
@@ -47,6 +48,14 @@ const DashboardIndexRoute = DashboardIndexImport.update({
 	getParentRoute: () => DashboardRoute,
 } as any).lazy(() =>
 	import('./routes/dashboard/index.lazy').then((d) => d.Route),
+)
+
+const DashboardAnalyticLazyRoute = DashboardAnalyticLazyImport.update({
+	id: '/analytic',
+	path: '/analytic',
+	getParentRoute: () => DashboardRoute,
+} as any).lazy(() =>
+	import('./routes/dashboard/analytic.lazy').then((d) => d.Route),
 )
 
 const AuthLoginRoute = AuthLoginImport.update({
@@ -87,6 +96,13 @@ declare module '@tanstack/react-router' {
 			preLoaderRoute: typeof AuthLoginImport
 			parentRoute: typeof AuthImport
 		}
+		'/dashboard/analytic': {
+			id: '/dashboard/analytic'
+			path: '/analytic'
+			fullPath: '/dashboard/analytic'
+			preLoaderRoute: typeof DashboardAnalyticLazyImport
+			parentRoute: typeof DashboardImport
+		}
 		'/dashboard/': {
 			id: '/dashboard/'
 			path: '/'
@@ -110,10 +126,12 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface DashboardRouteChildren {
+	DashboardAnalyticLazyRoute: typeof DashboardAnalyticLazyRoute
 	DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+	DashboardAnalyticLazyRoute: DashboardAnalyticLazyRoute,
 	DashboardIndexRoute: DashboardIndexRoute,
 }
 
@@ -126,6 +144,7 @@ export interface FileRoutesByFullPath {
 	'': typeof AuthRouteWithChildren
 	'/dashboard': typeof DashboardRouteWithChildren
 	'/login': typeof AuthLoginRoute
+	'/dashboard/analytic': typeof DashboardAnalyticLazyRoute
 	'/dashboard/': typeof DashboardIndexRoute
 }
 
@@ -133,6 +152,7 @@ export interface FileRoutesByTo {
 	'/': typeof IndexLazyRoute
 	'': typeof AuthRouteWithChildren
 	'/login': typeof AuthLoginRoute
+	'/dashboard/analytic': typeof DashboardAnalyticLazyRoute
 	'/dashboard': typeof DashboardIndexRoute
 }
 
@@ -142,20 +162,28 @@ export interface FileRoutesById {
 	'/_auth': typeof AuthRouteWithChildren
 	'/dashboard': typeof DashboardRouteWithChildren
 	'/_auth/login': typeof AuthLoginRoute
+	'/dashboard/analytic': typeof DashboardAnalyticLazyRoute
 	'/dashboard/': typeof DashboardIndexRoute
 }
 
 export interface FileRouteTypes {
 	fileRoutesByFullPath: FileRoutesByFullPath
-	fullPaths: '/' | '' | '/dashboard' | '/login' | '/dashboard/'
+	fullPaths:
+		| '/'
+		| ''
+		| '/dashboard'
+		| '/login'
+		| '/dashboard/analytic'
+		| '/dashboard/'
 	fileRoutesByTo: FileRoutesByTo
-	to: '/' | '' | '/login' | '/dashboard'
+	to: '/' | '' | '/login' | '/dashboard/analytic' | '/dashboard'
 	id:
 		| '__root__'
 		| '/'
 		| '/_auth'
 		| '/dashboard'
 		| '/_auth/login'
+		| '/dashboard/analytic'
 		| '/dashboard/'
 	fileRoutesById: FileRoutesById
 }
@@ -199,12 +227,17 @@ export const routeTree = rootRoute
     "/dashboard": {
       "filePath": "dashboard.tsx",
       "children": [
+        "/dashboard/analytic",
         "/dashboard/"
       ]
     },
     "/_auth/login": {
       "filePath": "_auth/login.tsx",
       "parent": "/_auth"
+    },
+    "/dashboard/analytic": {
+      "filePath": "dashboard/analytic.lazy.tsx",
+      "parent": "/dashboard"
     },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx",

@@ -1,5 +1,5 @@
-import Marker from '@/routes/dashboard/-component/marker'
-import { MAP_BOX_API_KEY } from '@constants'
+import Marker from '@/routes/dashboard/-component/map/marker'
+import { DEFAULT_MAP, DEFAULT_ZOOM_MARKER, MAP_BOX_API_KEY } from '@constants'
 import useDashboard from '@hooks/use-dashboard'
 import useMaps from '@hooks/use-maps'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -7,8 +7,8 @@ import * as React from 'react'
 import ReactMapGl, { NavigationControl, ScaleControl } from 'react-map-gl'
 import Detail from './detail'
 
-function Page() {
-	const { cctv } = useDashboard()
+function Maps() {
+	const { cctv, active } = useDashboard()
 	const { mapRef } = useMaps()
 
 	const marker = React.useMemo(() => {
@@ -23,9 +23,9 @@ function Page() {
 			<ReactMapGl
 				ref={mapRef}
 				initialViewState={{
-					latitude: -7.8,
-					longitude: 110.37,
-					zoom: 13,
+					latitude: active?.latitude ?? DEFAULT_MAP.latitude,
+					longitude: active?.longitude ?? DEFAULT_MAP.longitude,
+					zoom: active ? DEFAULT_ZOOM_MARKER : DEFAULT_MAP.zoom,
 				}}
 				mapStyle="mapbox://styles/mapbox/streets-v12"
 				mapboxAccessToken={MAP_BOX_API_KEY}
@@ -38,4 +38,4 @@ function Page() {
 	)
 }
 
-export default Page
+export default Maps

@@ -5,7 +5,7 @@ import { Marker as MapMarker } from 'react-map-gl'
 import MarkerIcon from './marker-icon'
 
 const Marker: React.FC<CCTV> = (cctv) => {
-	const { setActive } = useDashboard()
+	const { setActive, active } = useDashboard()
 	const { id, latitude, longitude } = cctv
 	return (
 		<MapMarker
@@ -17,7 +17,10 @@ const Marker: React.FC<CCTV> = (cctv) => {
 				setActive(cctv)
 			}}
 		>
-			<MarkerIcon data-marker-id={id} data-active="false" />
+			<MarkerIcon
+				data-marker-id={id}
+				data-active={active?.id === id ? 'true' : 'false'}
+			/>
 		</MapMarker>
 	)
 }
