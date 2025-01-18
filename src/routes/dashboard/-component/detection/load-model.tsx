@@ -3,29 +3,24 @@ import Typography from '@components/typography'
 import { Button } from '@components/ui/button'
 import { Progress } from '@components/ui/progress'
 import { MODEL_CLASSES } from '@constants'
-import useModel from '@hooks/use-detection'
-import { cn } from '@lib/utils'
+import useDashboard from '@hooks/use-dashboard'
+import useDetection from '@hooks/use-detection'
+import { calcAspectRatio, cn } from '@lib/utils'
 import Yolo from '@lib/yolo'
 import { Loader2, RefreshCw, TriangleAlert } from 'lucide-react'
 import * as React from 'react'
 
-interface LoadModelProps extends React.PropsWithChildren {
-	aspectRatio: string
-}
-
-interface WrapperProps extends LoadModelProps {
+interface WrapperProps extends React.PropsWithChildren {
 	isLoading?: boolean
 }
 
-const Wrapper: React.FC<WrapperProps> = ({
-	children,
-	isLoading,
-	aspectRatio,
-}) => {
+const Wrapper: React.FC<WrapperProps> = ({ children, isLoading }) => {
+	const { active } = useDashboard()
+
 	return (
 		<div
 			style={{
-				aspectRatio,
+				aspectRatio: calcAspectRatio(active?.width, active?.height),
 			}}
 			className="flex w-full items-center justify-center rounded-lg border p-8"
 		>
@@ -46,10 +41,11 @@ interface IProgress {
 	reason: string
 }
 
-const MODEL_URL = `${window.location.origin}/models/yolov8n/model.json`
+const MODEL_URL = `${window.location.origin}/models/yolov8s/model.json`
 
-const LoadModel: React.FC<LoadModelProps> = ({ children, aspectRatio }) => {
-	const { model, setModel } = useModel()
+const LoadModel: React.FC<React.PropsWithChildren> = ({ children }) => {
+	const { setIsDisable } = useDashboard()
+	const { model, setModel } = useDetection()
 	const modelRef = React.useRef<Yolo | null>(null)
 	const [error, setError] = React.useState<string | null>(null)
 	const [progress, setProgress] = React.useState<IProgress | null>(null)
@@ -59,6 +55,7 @@ const LoadModel: React.FC<LoadModelProps> = ({ children, aspectRatio }) => {
 
 		const loadModel = async () => {
 			try {
+				setIsDisable(true)
 				modelRef.current = await Yolo.loadModel({
 					modelPath: MODEL_URL,
 					classes: MODEL_CLASSES,
@@ -70,6 +67,7 @@ const LoadModel: React.FC<LoadModelProps> = ({ children, aspectRatio }) => {
 				setError('Failed to load model. Please try again later.')
 			} finally {
 				setProgress(null)
+				setIsDisable(false)
 			}
 		}
 
@@ -79,7 +77,7 @@ const LoadModel: React.FC<LoadModelProps> = ({ children, aspectRatio }) => {
 			modelRef.current = null
 			setModel(null)
 		}
-	}, [setModel])
+	}, [setModel, setIsDisable])
 
 	const handleReloadModel = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
@@ -98,7 +96,7 @@ const LoadModel: React.FC<LoadModelProps> = ({ children, aspectRatio }) => {
 
 	if (progress || !model) {
 		return (
-			<Wrapper aspectRatio={aspectRatio} isLoading>
+			<Wrapper isLoading>
 				<Loader2 className="mx-auto size-12 animate-spin text-red-500" />
 				<Logo />
 				{progress !== null && (
@@ -121,7 +119,7 @@ const LoadModel: React.FC<LoadModelProps> = ({ children, aspectRatio }) => {
 
 	if (error) {
 		return (
-			<Wrapper aspectRatio={aspectRatio}>
+			<Wrapper>
 				<TriangleAlert className="mx-auto size-16 text-red-500" />
 				<Logo />
 				<Typography variant="muted">{error}</Typography>

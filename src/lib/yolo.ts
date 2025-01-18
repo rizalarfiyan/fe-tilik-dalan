@@ -1,4 +1,4 @@
-import type { IModelClasses } from '@/types/model'
+import type { IModelClass, IModelClasses } from '@/types/model'
 import {
 	IOU_THRESHOLD,
 	KEY_CACHE_MODEL,
@@ -7,6 +7,11 @@ import {
 } from '@constants'
 import * as tf from '@tensorflow/tfjs'
 import axios from 'axios'
+import type React from 'react'
+import RenderBox, {
+	type IRenderBoxOptions,
+	type IRenderBoxProps,
+} from './render-box'
 
 export type IModelSource = HTMLImageElement | HTMLVideoElement
 
@@ -32,6 +37,40 @@ export type ModelConfig = InitModelConfig &
 			'scoreThreshold' | 'iouThreshold' | 'maxOutputSize' | 'cacheKey'
 		>
 	>
+
+export interface PreprocessResult {
+	input: tf.NamedTensorMap
+	xRatio: number
+	yRatio: number
+}
+
+export type PreprocessSource = (source: IModelSource) => PreprocessResult
+
+export type IResultArray = Float32Array | Int32Array | Uint8Array
+
+export type IModelPrediction = {
+	boxes: IResultArray
+	scores: IResultArray
+	classes: IResultArray
+	ratios: [number, number]
+}
+
+export type PredictionResult = {
+	boxes: tf.Tensor<tf.Rank>
+	scores: tf.Tensor<tf.Rank>
+	classes: tf.Tensor<tf.Rank>
+}
+
+export interface TotalResult {
+	label: IModelClass
+	value: number
+}
+
+export type DetectOptions = {
+	results?: (results: TotalResult[]) => void
+	renderBox?: (renderBox: Omit<IRenderBoxProps, 'canvas'>) => void
+	callback?: () => void
+}
 
 class Yolo {
 	private readonly model: tf.GraphModel
@@ -206,6 +245,143 @@ class Yolo {
 			},
 			env: tf.env().features,
 		}
+	}
+
+	preprocess(
+		source: IModelSource,
+		modelWidth: number,
+		modelHeight: number,
+	): [tf.Tensor<tf.Rank>, number, number] {
+		let xRatio = 0
+		let yRatio = 0
+
+		const input = tf.tidy(() => {
+			const img = tf.browser.fromPixels(source)
+			const [h, w] = img.shape.slice(0, 2)
+			const maxSize = Math.max(w, h)
+			const imgPadded = img.pad([
+				[0, maxSize - h],
+				[0, maxSize - w],
+				[0, 0],
+			])
+
+			xRatio = maxSize / w
+			yRatio = maxSize / h
+
+			return tf.image
+				.resizeBilinear(imgPadded as tf.Tensor4D, [modelWidth, modelHeight])
+				.div(255.0)
+				.expandDims(0)
+		})
+
+		return [input, xRatio, yRatio]
+	}
+
+	private getResults(predicted: IResultArray): TotalResult[] {
+		const result = {} as Record<TotalResult['label'], TotalResult>
+		for (let i = 0; i < predicted.length; i++) {
+			const label = this.classes[predicted[i]].label as TotalResult['label']
+			if (result[label]) {
+				result[label].value += 1
+				continue
+			}
+
+			result[label] = {
+				label,
+				value: 1,
+			}
+		}
+
+		return Object.values(result)
+	}
+
+	async detect(source: IModelSource, opts?: DetectOptions) {
+		const [modelWidth, modelHeight] = this.shape().slice(1, 3)
+
+		tf.engine().startScope()
+		const [input, xRatio, yRatio] = this.preprocess(
+			source,
+			modelWidth,
+			modelHeight,
+		)
+
+		const res = this.model.execute(input)
+		const transRes = (res as tf.Tensor<tf.Rank>).transpose([0, 2, 1])
+		const boxes = tf.tidy(() => {
+			const w = transRes.slice([0, 0, 2], [-1, -1, 1])
+			const h = transRes.slice([0, 0, 3], [-1, -1, 1])
+			const x1 = tf.sub(transRes.slice([0, 0, 0], [-1, -1, 1]), tf.div(w, 2))
+			const y1 = tf.sub(transRes.slice([0, 0, 1], [-1, -1, 1]), tf.div(h, 2))
+			return tf.concat([y1, x1, tf.add(y1, h), tf.add(x1, w)], 2).squeeze()
+		})
+
+		const [scores, classes] = tf.tidy(() => {
+			const rawScores = transRes
+				.slice([0, 0, 4], [-1, -1, this.classes.length])
+				.squeeze()
+			return [rawScores.max(1), rawScores.argMax(1)]
+		})
+
+		const nms = await tf.image.nonMaxSuppressionAsync(
+			boxes as tf.Tensor2D,
+			scores as tf.Tensor1D,
+			this.config.maxOutputSize,
+			this.config.iouThreshold,
+			this.config.scoreThreshold,
+		)
+
+		const boxesData = boxes.gather(nms, 0).dataSync() as IResultArray
+		const scoresData = scores.gather(nms, 0).dataSync() as IResultArray
+		const classesData = classes.gather(nms, 0).dataSync() as IResultArray
+
+		opts?.renderBox?.({
+			classes: this.classes,
+			prediction: {
+				boxes: boxesData,
+				classes: classesData,
+				scores: scoresData,
+				ratios: [xRatio, yRatio],
+			},
+		})
+
+		if (opts?.results) opts?.results(this.getResults(classesData))
+
+		tf.dispose([res, transRes, boxes, scores, classes, nms])
+		opts?.callback?.()
+		tf.engine().endScope()
+	}
+
+	detectVideo(
+		source: HTMLVideoElement,
+		canvas: HTMLCanvasElement,
+		stateRef: React.MutableRefObject<boolean>,
+		options?: IRenderBoxOptions,
+	) {
+		const detectFrame = async () => {
+			if (!stateRef.current) return
+			if (source.videoWidth === 0 && source.srcObject === null) {
+				const ctx = canvas.getContext('2d')!
+				ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+				return
+			}
+
+			this.detect(source, {
+				renderBox: (prediction) =>
+					new RenderBox({
+						canvas,
+						...prediction,
+					}).build(options),
+				callback: () => {
+					requestAnimationFrame(detectFrame)
+					// const timeout = setTimeout(() => {
+					//   detectFrame()
+					//   clearTimeout(timeout)
+					// }, 200)
+				},
+			})
+		}
+
+		detectFrame()
 	}
 }
 

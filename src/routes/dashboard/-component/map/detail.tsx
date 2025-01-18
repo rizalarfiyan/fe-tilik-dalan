@@ -4,6 +4,7 @@ import { Badge } from '@components/ui/badge'
 import { Button } from '@components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card'
 import useDashboard from '@hooks/use-dashboard'
+import { calcAspectRatio } from '@lib/utils'
 import { Link } from '@tanstack/react-router'
 import { ScanQrCode, X } from 'lucide-react'
 import * as React from 'react'
@@ -13,7 +14,7 @@ function Detail() {
 	const playerRef = React.useRef<HTMLVideoElement | null>(null)
 	if (!active) return null
 
-	const { title, image, link, aspect, width, height } = active
+	const { title, image, link, width, height } = active
 	const onDeactivate = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		setActive(null)
@@ -38,7 +39,7 @@ function Detail() {
 		{
 			id: 3,
 			label: 'Aspect Ratio',
-			value: aspect,
+			value: calcAspectRatio(width, height, ':'),
 		},
 	]
 
@@ -63,7 +64,8 @@ function Detail() {
 					playerRef={playerRef}
 					src={link}
 					thumbnail={image.thumb}
-					aspect={aspect}
+					width={width}
+					height={height}
 					muted
 				/>
 				<div className="flex items-center">

@@ -1,20 +1,9 @@
-import * as React from 'react'
+import { calcAspectRatio, cn } from '@/lib/utils'
 import Hls, { type HlsConfig } from 'hls.js'
-import {
-	AlertCircle,
-	CirclePlay,
-	CircleStop,
-	Loader2,
-	type LucideIcon,
-} from 'lucide-react'
-import { aspectRatio, cn } from '@/lib/utils'
-import Typography from './typography'
+import { CirclePlay, CircleStop } from 'lucide-react'
+import * as React from 'react'
+import StateObject, { type IState } from './state-obect'
 import { Button } from './ui/button'
-
-interface IStatus {
-	loading?: boolean
-	error?: string | null
-}
 
 export interface HlsPlayerProps
 	extends Omit<
@@ -23,7 +12,8 @@ export interface HlsPlayerProps
 	> {
 	hlsConfig?: Partial<HlsConfig>
 	playerRef: React.RefObject<HTMLVideoElement | null>
-	aspect?: string
+	width?: number
+	height?: number
 	thumbnail: string
 	src: string
 }
@@ -34,7 +24,7 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({
 	src,
 	...props
 }) => {
-	const [status, setStatus] = React.useState<IStatus | null>(null)
+	const [state, setState] = React.useState<IState | null>(null)
 	const [isPlaying, setIsPlaying] = React.useState<boolean>(true)
 
 	React.useEffect(() => {
@@ -60,7 +50,7 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({
 					playerRef?.current
 						?.play()
 						.then(() => {
-							setStatus(null)
+							setState(null)
 						})
 						.catch(() => {
 							console.warn(
@@ -89,7 +79,7 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({
 			hls = newHls
 		}
 
-		setStatus({ loading: true })
+		setState({ loading: true })
 		_initPlayer()
 
 		return () => {
@@ -114,7 +104,7 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({
 	)
 
 	const [show, setShow] = React.useState(false)
-	const hasState = status?.loading || status?.error
+	const hasState = state?.loading || state?.error
 
 	return (
 		<div
@@ -128,7 +118,7 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({
 			}}
 			className="z-10"
 		>
-			{!status?.error && !status?.loading ? (
+			{!state?.error && !state?.loading ? (
 				<ButtonPlayStop
 					show={show}
 					isPlaying={isPlaying}
@@ -136,40 +126,9 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({
 					overlay
 				/>
 			) : (
-				<>
-					<div className="absolute inset-0 z-[-1] h-full w-full bg-slate-700/50" />
-					{status?.loading && (
-						<State
-							icon={Loader2}
-							iconClassName="animate-spin"
-							message="Loading Stream"
-						/>
-					)}
-					{status?.error && <State icon={AlertCircle} message={status.error} />}
-				</>
+				<StateObject loadingText="Loading stream..." state={state} />
 			)}
 			<video className={cn(hasState && 'hidden')} ref={playerRef} {...props} />
-		</div>
-	)
-}
-
-interface StateProps {
-	icon: LucideIcon
-	iconClassName?: string
-	message: string
-}
-
-const State: React.FC<StateProps> = ({
-	icon: Icon,
-	iconClassName,
-	message,
-}) => {
-	return (
-		<div className="z-10 flex items-center justify-center gap-3 rounded-md bg-slate-800 p-3">
-			<Icon className={cn('size-5 text-white', iconClassName)} />
-			<Typography className="!mt-0 font-medium text-sm text-white">
-				{message}
-			</Typography>
 		</div>
 	)
 }
@@ -188,23 +147,18 @@ const ButtonPlayStop: React.FC<ButtonPlayStopProps> = ({
 	onClick,
 }) => {
 	return (
-		<>
-			{overlay && (
-				<div
-					className={cn(
-						'absolute inset-0 h-full w-full bg-slate-700/50 opacity-0 transition-all duration-300',
-						show && 'opacity-100',
-					)}
-				/>
+		<div
+			className={cn(
+				'absolute inset-0 z-[1] flex h-full w-full items-center justify-center opacity-0 transition-all duration-500',
+				(show || !isPlaying) && 'opacity-100',
+				overlay && 'bg-slate-800/80',
 			)}
+		>
 			<Button
 				variant="outline"
 				type="button"
 				size="icon"
-				className={cn(
-					'-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 z-10 p-6 text-primary opacity-0 transition-all duration-500 hover:bg-slate-200',
-					show && 'opacity-100',
-				)}
+				className="p-6 text-primary hover:bg-slate-200"
 				onClick={onClick}
 			>
 				{isPlaying ? (
@@ -213,18 +167,13 @@ const ButtonPlayStop: React.FC<ButtonPlayStopProps> = ({
 					<CirclePlay className="size-8" />
 				)}
 			</Button>
-		</>
+		</div>
 	)
 }
 
 const HlsPlayerWrapper: React.FC<HlsPlayerProps> = (props) => {
-	const { src, aspect, thumbnail } = props
+	const { src, width, height, thumbnail } = props
 	const [isPlaying, setIsPlaying] = React.useState<boolean>(false)
-
-	const ratio = React.useMemo(() => {
-		const val = aspectRatio(aspect)
-		return `${val[0]} / ${val[1]}`
-	}, [aspect])
 
 	React.useEffect(() => {
 		if (src) setIsPlaying(false)
@@ -238,7 +187,7 @@ const HlsPlayerWrapper: React.FC<HlsPlayerProps> = (props) => {
 	return (
 		<div
 			style={{
-				aspectRatio: ratio,
+				aspectRatio: calcAspectRatio(width, height),
 				backgroundSize: 'contain',
 				backgroundImage: `url(${thumbnail})`,
 			}}

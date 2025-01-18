@@ -6,7 +6,6 @@ export interface CCTV {
 	longitude: number
 	width: number
 	height: number
-	aspect: string
 	image: CCTVImage
 }
 

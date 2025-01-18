@@ -18,3 +18,23 @@ export const aspectRatio = (aspect?: string): [number, number] => {
 	if (arr.length < 2) return defaultAspect
 	return [arr[0], arr[1]]
 }
+
+export const calcAspectRatio = (
+	width?: number,
+	height?: number,
+	delimiter = '/',
+): string => {
+	if (!width || !height) return `16${delimiter}9`
+	if (width === height) return `1${delimiter}1`
+
+	const gcd = (a: number, b: number): number => {
+		return b === 0 ? a : gcd(b, a % b)
+	}
+
+	const larger = Math.max(width, height)
+	const smaller = Math.min(width, height)
+	const divisor = gcd(larger, smaller)
+	const x = Math.floor(larger / divisor)
+	const y = Math.floor(smaller / divisor)
+	return `${x}${delimiter}${y}`
+}
