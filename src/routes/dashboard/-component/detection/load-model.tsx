@@ -9,13 +9,26 @@ import Yolo from '@lib/yolo'
 import { Loader2, RefreshCw, TriangleAlert } from 'lucide-react'
 import * as React from 'react'
 
-interface WrapperProps extends React.PropsWithChildren {
+interface LoadModelProps extends React.PropsWithChildren {
+	aspectRatio: string
+}
+
+interface WrapperProps extends LoadModelProps {
 	isLoading?: boolean
 }
 
-const Wrapper: React.FC<WrapperProps> = ({ children, isLoading }) => {
+const Wrapper: React.FC<WrapperProps> = ({
+	children,
+	isLoading,
+	aspectRatio,
+}) => {
 	return (
-		<div className="flex aspect-video w-full items-center justify-center rounded-lg border p-8">
+		<div
+			style={{
+				aspectRatio,
+			}}
+			className="flex w-full items-center justify-center rounded-lg border p-8"
+		>
 			<div
 				className={cn(
 					'w-full max-w-[250px] text-center',
@@ -33,9 +46,9 @@ interface IProgress {
 	reason: string
 }
 
-const MODEL_URL = `${window.location.origin}/models/yolov8s/model.json`
+const MODEL_URL = `${window.location.origin}/models/yolov8n/model.json`
 
-const LoadModel: React.FC<React.PropsWithChildren> = ({ children }) => {
+const LoadModel: React.FC<LoadModelProps> = ({ children, aspectRatio }) => {
 	const { model, setModel } = useModel()
 	const modelRef = React.useRef<Yolo | null>(null)
 	const [error, setError] = React.useState<string | null>(null)
@@ -85,7 +98,7 @@ const LoadModel: React.FC<React.PropsWithChildren> = ({ children }) => {
 
 	if (progress || !model) {
 		return (
-			<Wrapper isLoading>
+			<Wrapper aspectRatio={aspectRatio} isLoading>
 				<Loader2 className="mx-auto size-12 animate-spin text-red-500" />
 				<Logo />
 				{progress !== null && (
@@ -108,7 +121,7 @@ const LoadModel: React.FC<React.PropsWithChildren> = ({ children }) => {
 
 	if (error) {
 		return (
-			<Wrapper>
+			<Wrapper aspectRatio={aspectRatio}>
 				<TriangleAlert className="mx-auto size-16 text-red-500" />
 				<Logo />
 				<Typography variant="muted">{error}</Typography>
