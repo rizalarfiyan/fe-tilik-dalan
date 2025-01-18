@@ -59,7 +59,10 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 		const height = imageRef.current?.naturalHeight ?? 0
 
 		return {
-			objects: objectRef.current,
+			objects: {
+				value: objectRef.current,
+				total: objectRef.current?.reduce((acc, { total }) => acc + total, 0),
+			},
 			tables: [
 				{
 					id: 1,
@@ -108,8 +111,8 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 	}
 
 	return (
-		<div className="space-y-6">
-			<div className="relative rounded-md border-2 border-dashed p-3">
+		<div className="flex gap-6">
+			<div className="relative max-w-3xl rounded-md border-2 border-dashed p-3">
 				<div className="relative w-full overflow-hidden">
 					<img
 						ref={imageRef}
@@ -137,11 +140,11 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 				</Button>
 				<StateObject state={state} />
 			</div>
-			<div className="space-y-6">
+			<div className="mt-4 space-y-4">
 				<Typography variant="h4" className="text-center">
 					Detection results:
 				</Typography>
-				<div className="flex items-center justify-between gap-4">
+				<div className="flex flex-col items-center justify-between gap-6">
 					<table className="w-full">
 						<tbody>
 							{tables.map(({ id, label, value }) => {
@@ -161,33 +164,41 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 						</tbody>
 					</table>
 					<div className="w-full max-w-sm space-y-5 text-center">
-						<div className="font-semibold">Objects:</div>
-						{!objects || objects?.length <= 0 ? (
+						<div className="font-semibold">Objects: {objects.total}</div>
+						{!objects.value || objects.value?.length <= 0 ? (
 							<div
 								className={cn(
 									'inline-block rounded-md border bg-slate-50 px-5 py-3 text-sm',
-									objects !== null && 'border-red-300 bg-red-50 text-red-600',
+									objects.value !== null &&
+										'border-red-300 bg-red-50 text-red-600',
 								)}
 							>
-								{objects !== null ? 'No object detected.' : 'Loading object...'}
+								{objects.value !== null
+									? 'No object detected.'
+									: 'Loading object...'}
 							</div>
 						) : (
 							<div className="flex flex-wrap items-center justify-center gap-2">
-								{objects.map(({ total, class: { color, label } }) => (
-									<Badge
-										variant="outline"
-										className="flex items-center gap-2 px-2 py-1 pl-3"
-										key={label}
-									>
-										<div className="font-semibold">{label}</div>
-										<div
-											className="rounded-full px-1.5 py-0.5"
-											style={{ backgroundColor: color }}
+								{objects.value.map(
+									({ total, class: { color, foreground, label } }) => (
+										<Badge
+											variant="outline"
+											className="flex items-center gap-2 px-2 py-1 pl-3"
+											key={label}
 										>
-											{total}
-										</div>
-									</Badge>
-								))}
+											<div className="font-semibold">{label}</div>
+											<div
+												className="rounded-full px-1.5 py-0.5"
+												style={{
+													backgroundColor: color,
+													color: foreground,
+												}}
+											>
+												{total}
+											</div>
+										</Badge>
+									),
+								)}
 							</div>
 						)}
 					</div>

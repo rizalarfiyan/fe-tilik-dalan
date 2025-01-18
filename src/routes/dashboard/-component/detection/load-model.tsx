@@ -41,7 +41,7 @@ interface IProgress {
 	reason: string
 }
 
-const MODEL_URL = `${window.location.origin}/models/yolov8s/model.json`
+const MODEL_URL = `${window.location.origin}/models/yolov8n/model.json`
 
 const LoadModel: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const { setIsDisable } = useDashboard()
@@ -73,6 +73,7 @@ const LoadModel: React.FC<React.PropsWithChildren> = ({ children }) => {
 
 		loadModel()
 		return () => {
+			console.info('Disposing model...')
 			modelRef.current?.dispose()
 			modelRef.current = null
 			setModel(null)

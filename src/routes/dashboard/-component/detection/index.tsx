@@ -42,7 +42,7 @@ function Detection() {
 					</Button>
 				)}
 			</div>
-			<Card className="w-full max-w-4xl">
+			<Card className="m-6 mt-20 w-full max-w-7xl">
 				<CardHeader className="flex flex-row items-center justify-between space-y-0 border-b p-4">
 					<div className="flex items-center gap-3">
 						<Activity className="size-5 text-primary" />

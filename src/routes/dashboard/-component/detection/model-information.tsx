@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/dialog'
 import { ScrollArea, ScrollBar } from '@components/ui/scroll-area'
 import useDetection from '@hooks/use-detection'
+import { DialogDescription } from '@radix-ui/react-dialog'
 import { Info } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
@@ -34,6 +35,9 @@ function ModelInformation() {
 			<DialogContent className="max-w-3xl">
 				<DialogHeader>
 					<DialogTitle>Model Information</DialogTitle>
+					<DialogDescription>
+						Information environment about the model used for detection.
+					</DialogDescription>
 				</DialogHeader>
 				<ScrollArea
 					type="always"

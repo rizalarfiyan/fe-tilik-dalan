@@ -9,6 +9,7 @@ interface UploadImageProps {
 }
 
 const UploadImage: React.FC<UploadImageProps> = ({ setFile }) => {
+	const [error, setError] = React.useState<string | null>(null)
 	const onDrop = React.useCallback(
 		(acceptedFiles: File[]) => {
 			const acceptedFile = acceptedFiles[0]
@@ -28,9 +29,12 @@ const UploadImage: React.FC<UploadImageProps> = ({ setFile }) => {
 		maxSize: 5 * 1024 * 1024, // 5MB
 		minSize: 70 * 1024, // 70KB
 		multiple: false,
+		onDropRejected: (files) => {
+			if (files.length <= 0 || files[0].errors.length <= 0) return
+			setError(files[0].errors[0].message)
+		},
 	})
 
-	// TODO: handle error
 	return (
 		<div
 			{...getRootProps()}
@@ -50,6 +54,13 @@ const UploadImage: React.FC<UploadImageProps> = ({ setFile }) => {
 				<Typography className="text-xs">
 					(Only *.png, *.jpg and *.jpeg files, max 5MB, min 70KB)
 				</Typography>
+				{error && (
+					<div className="max-w-96">
+						<Typography className="mt-2 font-semibold text-red-500 text-sm">
+							{error}
+						</Typography>
+					</div>
+				)}
 			</div>
 		</div>
 	)

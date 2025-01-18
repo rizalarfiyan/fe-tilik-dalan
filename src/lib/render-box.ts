@@ -71,7 +71,7 @@ class RenderBox {
 		const obj: Record<string, Record<string, number>> = {}
 		const { scores, classes } = this.prediction
 		for (let i = 0; i < scores.length; ++i) {
-			const { color, label } = this.classes[classes[i]]
+			const { color, foreground, label } = this.classes[classes[i]]
 
 			const size = this.box(i)
 			if (opts?.skipCallback) {
@@ -123,7 +123,7 @@ class RenderBox {
 					textHeight + this.lineWidth,
 				)
 
-				this.ctx.fillStyle = '#ffffff'
+				this.ctx.fillStyle = foreground
 				this.ctx.fillText(text, x1 - 1, yText < 0 ? 0 : yText)
 			}
 		}

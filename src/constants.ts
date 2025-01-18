@@ -21,9 +21,9 @@ export const AUTH_ROLE = {
 
 export const KEY_CACHE_MODEL = 'cache_yolov8'
 
-export const SCORE_THRESHOLD = 0.45
-export const MAX_OUTPUT_SIZE = 500
-export const IOU_THRESHOLD = 0.45
+export const SCORE_THRESHOLD = 0.5
+export const MAX_OUTPUT_SIZE = 200
+export const IOU_THRESHOLD = 0.35
 export const TRACKING_THRESHOLD = 50
 
 export enum MODEL_CLASS {
@@ -40,44 +40,50 @@ export enum MODEL_CLASS {
 }
 
 export const MODEL_CLASSES: IModelClasses<MODEL_CLASS>[] = [
+	{ label: MODEL_CLASS.PEOPLE, color: '#33FF57', foreground: '#000000' },
 	{
 		label: MODEL_CLASS.PEDESTRIAN,
 		color: '#FF5733',
-	},
-	{
-		label: MODEL_CLASS.PEOPLE,
-		color: '#33FF57',
+		foreground: '#FFFFFF',
 	},
 	{
 		label: MODEL_CLASS.BICYCLE,
 		color: '#3357FF',
+		foreground: '#FFFFFF',
 	},
 	{
 		label: MODEL_CLASS.CAR,
 		color: '#FF33A1',
+		foreground: '#FFFFFF',
 	},
 	{
 		label: MODEL_CLASS.VAN,
-		color: '#A133FF',
+		color: '#FFA533',
+		foreground: '#000000',
 	},
 	{
 		label: MODEL_CLASS.TRUCK,
-		color: '#33FFF5',
+		color: '#A533FF',
+		foreground: '#FFFFFF',
 	},
 	{
 		label: MODEL_CLASS.TRICYCLE,
-		color: '#F5FF33',
+		color: '#33FFF2',
+		foreground: '#000000',
 	},
 	{
 		label: MODEL_CLASS.AWNING_TRICYCLE,
-		color: '#FF8C33',
+		color: '#FFDB33',
+		foreground: '#000000',
 	},
 	{
 		label: MODEL_CLASS.BUS,
-		color: '#8C33FF',
+		color: '#33FF8F',
+		foreground: '#000000',
 	},
 	{
 		label: MODEL_CLASS.MOTOR,
-		color: '#33FF8C',
+		color: '#FF3333',
+		foreground: '#FFFFFF',
 	},
 ]
