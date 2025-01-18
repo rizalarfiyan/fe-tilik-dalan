@@ -1,8 +1,10 @@
-import * as React from 'react'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from '@/routeTree.gen'
 import LoadingScreen from '@components/loading-screen'
+import NotFound from '@components/not-found'
 import useAuth from '@hooks/use-auth'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { PanelsTopLeft, Route } from 'lucide-react'
+import * as React from 'react'
 
 const router = createRouter({
 	routeTree,
@@ -12,6 +14,11 @@ const router = createRouter({
 	defaultPreload: 'intent',
 	defaultPreloadStaleTime: 0,
 	defaultPendingMinMs: 0,
+	defaultPendingComponent: () => (
+		<LoadingScreen icon={PanelsTopLeft} reason="Initializing page..." />
+	),
+	defaultNotFoundComponent: NotFound,
+	notFoundMode: 'root',
 })
 
 declare module '@tanstack/react-router' {
@@ -28,7 +35,7 @@ const RouteProvider: React.FC<React.PropsWithChildren> = () => {
 	const auth = useAuth()
 	return (
 		<React.Suspense
-			fallback={<LoadingScreen reason="Initializing router..." />}
+			fallback={<LoadingScreen icon={Route} reason="Initializing route..." />}
 		>
 			<RouterProvider router={router} context={{ auth }} />
 		</React.Suspense>

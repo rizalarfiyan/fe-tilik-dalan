@@ -1,5 +1,4 @@
 import type { IRouterContext } from '@/types/app'
-import NotFound from '@components/not-found'
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import * as React from 'react'
 
@@ -19,5 +18,4 @@ export const Route = createRootRouteWithContext<IRouterContext>()({
 			<TanStackRouterDevtools position="top-right" />
 		</>
 	),
-	notFoundComponent: NotFound,
 })

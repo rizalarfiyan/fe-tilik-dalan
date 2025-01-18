@@ -68,7 +68,13 @@ function Page() {
 			<div className="relative hidden h-screen flex-1 items-center justify-center bg-slate-900 lg:flex">
 				<div className="relative z-10 w-full max-w-xl space-y-6 p-8">
 					<Logo dotContrast typographyClassName="text-white" />
-					<img src={illustration} aria-label="Illustration login" />
+					<div className="aspect-video h-full w-full">
+						<img
+							className="mx-auto h-full w-auto"
+							src={illustration}
+							alt="Illustration login"
+						/>
+					</div>
 					<div className=" mt-16 space-y-3 text-center">
 						<Typography as="h3" variant="h2" className="text-white">
 							Start growing your business quickly

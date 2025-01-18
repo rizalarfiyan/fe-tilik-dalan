@@ -51,6 +51,15 @@ export default {
 					5: 'hsl(var(--chart-5))',
 				},
 			},
+			animation: {
+				move: 'move 1.5s infinite linear',
+			},
+			keyframes: {
+				move: {
+					'0%': { left: '-100%' },
+					'100%': { left: '100%' },
+				},
+			},
 		},
 	},
 	plugins: [require('tailwindcss-animate')],
