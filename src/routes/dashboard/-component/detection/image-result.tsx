@@ -7,7 +7,7 @@ import useDetection from '@hooks/use-detection'
 import RenderBox from '@lib/render-box'
 import { calcAspectRatio, cn, fileSizeSI } from '@lib/utils'
 import type { TotalResult } from '@lib/yolo'
-import { X } from 'lucide-react'
+import { ImageDown, X } from 'lucide-react'
 import * as React from 'react'
 
 interface ImageResultProps {
@@ -54,15 +54,20 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 		}
 	}
 
-	const { objects, tables } = React.useMemo(() => {
-		const width = imageRef.current?.naturalWidth ?? 0
-		const height = imageRef.current?.naturalHeight ?? 0
+	const { obj, total, tables } = React.useMemo(() => {
+		const image = imageRef.current
+		const width = image?.naturalWidth ?? 0
+		const height = image?.naturalHeight ?? 0
+		const obj = objectRef.current
+
+		const skipWhenLoading = <T,>(value: T): T | null => {
+			if (state?.loading) return null
+			return value
+		}
 
 		return {
-			objects: {
-				value: objectRef.current,
-				total: objectRef.current?.reduce((acc, { total }) => acc + total, 0),
-			},
+			obj: skipWhenLoading(obj),
+			total: obj?.reduce((acc, { total }) => acc + total, 0),
 			tables: [
 				{
 					id: 1,
@@ -82,12 +87,12 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 				{
 					id: 4,
 					label: 'Resolution',
-					value: state?.loading ? null : `${width}x${height}`,
+					value: skipWhenLoading(`${width} x ${height}`),
 				},
 				{
 					id: 5,
 					label: 'Aspect Ratio',
-					value: state?.loading ? null : calcAspectRatio(width, height, ':'),
+					value: skipWhenLoading(calcAspectRatio(width, height, ':')),
 				},
 			],
 		}
@@ -101,7 +106,8 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 		}, 25)
 	}
 
-	const removeImage = () => {
+	const onRemoveImage = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.stopPropagation()
 		imageRef.current = null
 		setFile(null)
 		const canvas = canvasRef.current
@@ -110,9 +116,34 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 		ctx.clearRect(0, 0, canvas.width, canvas.height)
 	}
 
+	const onDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		const image = imageRef.current
+		const detect = canvasRef.current
+
+		if (!image || !detect) return
+		const canvas = document.createElement('canvas')
+		const ctx = canvas.getContext('2d')
+		if (!ctx) return
+		const width = image.naturalWidth
+		const height = image.naturalHeight
+		canvas.width = width
+		canvas.height = height
+
+		ctx.drawImage(image, 0, 0, width, height)
+		ctx.drawImage(detect, 0, 0, width, height)
+
+		const imageURL = canvas.toDataURL('image/png')
+		console.log(imageURL)
+		const link = document.createElement('a')
+		link.href = imageURL
+		link.download = `${file.name.replace(/\.[^/.]+$/, '')}-detection.png`
+		link.click()
+	}
+
 	return (
 		<div className="flex gap-6">
-			<div className="relative max-w-3xl rounded-md border-2 border-dashed p-3">
+			<div className="relative w-full max-w-3xl rounded-md border-2 border-dashed p-3">
 				<div className="relative w-full overflow-hidden">
 					<img
 						ref={imageRef}
@@ -131,17 +162,14 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 				<Button
 					size="icon"
 					className="absolute top-6 right-6"
-					onClick={(e) => {
-						e.stopPropagation()
-						removeImage()
-					}}
+					onClick={onRemoveImage}
 				>
 					<X className="size-5" />
 				</Button>
 				<StateObject state={state} />
 			</div>
-			<div className="mt-4 space-y-4">
-				<Typography variant="h4" className="text-center">
+			<div className="mt-4 flex-grow space-y-4">
+				<Typography variant="h4" as="h3" className="text-center">
 					Detection results:
 				</Typography>
 				<div className="flex flex-col items-center justify-between gap-6">
@@ -156,7 +184,7 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 								return (
 									<tr key={id} className="px-2">
 										<td className="w-32 py-1 pl-3 font-semibold">{label}</td>
-										<td className="px-2 py-1">:</td>
+										<td className="w-5 px-2 py-1">:</td>
 										<td className="line-clamp-2 py-1 pr-3">{val}</td>
 									</tr>
 								)
@@ -164,44 +192,45 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 						</tbody>
 					</table>
 					<div className="w-full max-w-sm space-y-5 text-center">
-						<div className="font-semibold">Objects: {objects.total}</div>
-						{!objects.value || objects.value?.length <= 0 ? (
+						<div className="font-semibold">Objects: {total}</div>
+						{!obj || obj.length <= 0 ? (
 							<div
 								className={cn(
 									'inline-block rounded-md border bg-slate-50 px-5 py-3 text-sm',
-									objects.value !== null &&
-										'border-red-300 bg-red-50 text-red-600',
+									obj !== null && 'border-red-300 bg-red-50 text-red-600',
 								)}
 							>
-								{objects.value !== null
-									? 'No object detected.'
-									: 'Loading object...'}
+								{obj !== null ? 'No object detected.' : 'Loading object...'}
 							</div>
 						) : (
 							<div className="flex flex-wrap items-center justify-center gap-2">
-								{objects.value.map(
-									({ total, class: { color, foreground, label } }) => (
-										<Badge
-											variant="outline"
-											className="flex items-center gap-2 px-2 py-1 pl-3"
-											key={label}
+								{obj.map(({ total, class: { color, foreground, label } }) => (
+									<Badge
+										variant="outline"
+										className="flex items-center gap-2 px-2 py-1 pl-3"
+										key={label}
+									>
+										<div className="font-semibold">{label}</div>
+										<div
+											className="rounded-full px-1.5 py-0.5"
+											style={{
+												backgroundColor: color,
+												color: foreground,
+											}}
 										>
-											<div className="font-semibold">{label}</div>
-											<div
-												className="rounded-full px-1.5 py-0.5"
-												style={{
-													backgroundColor: color,
-													color: foreground,
-												}}
-											>
-												{total}
-											</div>
-										</Badge>
-									),
-								)}
+											{total}
+										</div>
+									</Badge>
+								))}
 							</div>
 						)}
 					</div>
+					{obj && obj.length > 0 && (
+						<Button size="lg" className="font-bold" onClick={onDownload}>
+							<ImageDown className="size-5" />
+							Download
+						</Button>
+					)}
 				</div>
 			</div>
 		</div>
