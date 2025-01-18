@@ -38,3 +38,8 @@ export const calcAspectRatio = (
 	const y = Math.floor(smaller / divisor)
 	return `${x}${delimiter}${y}`
 }
+
+export const fileSizeSI = (size: number): string => {
+	const e = (Math.log(size) / Math.log(1e3)) | 0
+	return `${(size / 1e3 ** e).toFixed(2)} ${'kMGTPEZY'[e - 1] || ''}B`
+}

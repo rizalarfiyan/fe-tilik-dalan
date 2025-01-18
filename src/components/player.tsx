@@ -2,7 +2,7 @@ import { calcAspectRatio, cn } from '@/lib/utils'
 import Hls, { type HlsConfig } from 'hls.js'
 import { CirclePlay, CircleStop } from 'lucide-react'
 import * as React from 'react'
-import StateObject, { type IState } from './state-obect'
+import StateObject, { type IState } from './state-object'
 import { Button } from './ui/button'
 
 export interface HlsPlayerProps

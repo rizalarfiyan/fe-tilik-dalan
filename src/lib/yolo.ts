@@ -62,8 +62,8 @@ export type PredictionResult = {
 }
 
 export interface TotalResult {
-	label: IModelClass
-	value: number
+	class: IModelClasses
+	total: number
 }
 
 export type DetectOptions = {
@@ -278,17 +278,18 @@ class Yolo {
 	}
 
 	private getResults(predicted: IResultArray): TotalResult[] {
-		const result = {} as Record<TotalResult['label'], TotalResult>
+		const result = {} as Record<IModelClass, TotalResult>
 		for (let i = 0; i < predicted.length; i++) {
-			const label = this.classes[predicted[i]].label as TotalResult['label']
-			if (result[label]) {
-				result[label].value += 1
+			const val = this.classes[predicted[i]] as IModelClasses<IModelClass>
+			const key = val.label
+			if (result[key]) {
+				result[key].total += 1
 				continue
 			}
 
-			result[label] = {
-				label,
-				value: 1,
+			result[key] = {
+				class: val,
+				total: 1,
 			}
 		}
 
