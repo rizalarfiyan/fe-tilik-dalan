@@ -4,15 +4,22 @@ import StateObject from '@components/state-object'
 import Typography from '@components/typography'
 import { Badge } from '@components/ui/badge'
 import useDetection from '@hooks/use-detection'
-import RenderBox from '@lib/render-box'
+import RenderBox, { type IRenderBoxOptions } from '@lib/render-box'
 import { calcAspectRatio, cn, fileSizeSI } from '@lib/utils'
 import type { TotalResult } from '@lib/yolo'
 import { ImageDown, X } from 'lucide-react'
 import * as React from 'react'
+import DetectImageConfig from './detect-image-config'
 
 interface ImageResultProps {
 	file: File
 	setFile: (file: File | null) => void
+}
+
+const renderBoxOpts: IRenderBoxOptions = {
+	prediction: 'percent',
+	fill: true,
+	label: true,
 }
 
 const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
@@ -22,6 +29,7 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 	const canvasRef = React.useRef<HTMLCanvasElement>(null)
 	const imageRef = React.useRef<HTMLImageElement>(null)
 	const objectRef = React.useRef<TotalResult[] | null>(null)
+	const renderBoxRef = React.useRef<RenderBox | null>(null)
 	const [state, setState] = React.useState<IState | null>({
 		loading: true,
 	})
@@ -30,20 +38,20 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 		const canvas = canvasRef.current
 		const img = imageRef.current
 		if (!model || !canvas || !img) return
+		console.log('Detecting object...')
 		try {
 			await model.detect(img, {
 				results: (results) => {
 					objectRef.current = results
 				},
-				renderBox: (prediction) =>
-					new RenderBox({
+				renderBox: (state) => {
+					const box = new RenderBox({
 						canvas,
-						...prediction,
-					}).build({
-						prediction: 'percent',
-						fill: true,
-						label: true,
-					}),
+						...state,
+					})
+					box.build(renderBoxOpts)
+					renderBoxRef.current = box
+				},
 			})
 			setState(null)
 		} catch (err) {
@@ -160,13 +168,23 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 						className="absolute inset-0 h-full w-full"
 					/>
 				</div>
-				<Button
-					size="icon"
-					className="absolute top-6 right-6"
-					onClick={onRemoveImage}
-				>
-					<X className="size-5" />
-				</Button>
+				<div className="absolute top-6 right-6 flex items-center gap-2">
+					{obj && obj.length > 0 && (
+						<DetectImageConfig
+							defaultOptions={{
+								...renderBoxOpts,
+								allowClass: (objectRef.current ?? []).map(
+									({ class: { label } }) => label,
+								),
+							}}
+							object={objectRef.current}
+							renderBox={renderBoxRef.current}
+						/>
+					)}
+					<Button variant="destructive" size="icon" onClick={onRemoveImage}>
+						<X className="size-5" />
+					</Button>
+				</div>
 				<StateObject state={state} />
 			</div>
 			<div className="mt-4 flex-grow space-y-4">

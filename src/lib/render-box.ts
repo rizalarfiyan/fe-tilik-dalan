@@ -17,6 +17,7 @@ export interface IRenderBoxOptions {
 	fill?: boolean
 	prediction?: 'score' | 'percent'
 	centerBox?: boolean
+	allowClass?: string[]
 	beforeMount?: () => void
 	afterMount?: () => void
 	skipCallback?: (size: ISkipCallbackProps) => IRenderBoxSkipCallback
@@ -72,6 +73,9 @@ class RenderBox {
 		const { scores, classes } = this.prediction
 		for (let i = 0; i < scores.length; ++i) {
 			const { color, foreground, label } = this.classes[classes[i]]
+			if (opts?.allowClass) {
+				if (!opts.allowClass.includes(label)) continue
+			}
 
 			const size = this.box(i)
 			if (opts?.skipCallback) {

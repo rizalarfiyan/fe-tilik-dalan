@@ -43,3 +43,10 @@ export const fileSizeSI = (size: number): string => {
 	const e = (Math.log(size) / Math.log(1e3)) | 0
 	return `${(size / 1e3 ** e).toFixed(2)} ${'kMGTPEZY'[e - 1] || ''}B`
 }
+
+export const kebabToTitleCase = (str: string): string => {
+	return str
+		.split('-')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ')
+}

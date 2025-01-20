@@ -25,7 +25,7 @@ const UploadImage: React.FC<UploadImageProps> = ({ setFile }) => {
 		accept: {
 			'image/png': ['.png'],
 			'image/jpeg': ['.jpg', '.jpeg'],
-			webp: ['.webp'],
+			'image/webp': ['.webp'],
 		},
 		maxSize: 5 * 1024 * 1024, // 5MB
 		minSize: 40 * 1024, // 40KB
