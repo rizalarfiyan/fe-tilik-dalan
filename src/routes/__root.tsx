@@ -15,7 +15,7 @@ export const Route = createRootRouteWithContext<IRouterContext>()({
 	component: () => (
 		<>
 			<Outlet />
-			<TanStackRouterDevtools position="top-right" />
+			<TanStackRouterDevtools position="bottom-right" />
 		</>
 	),
 })

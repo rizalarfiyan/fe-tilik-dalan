@@ -21,7 +21,7 @@ function Maps() {
 	}, [cctv])
 
 	return (
-		<div className="relative flex h-full min-h-screen w-full">
+		<div className="relative flex h-full min-h-[calc(100vh_-_64px)] w-full xl:min-h-screen">
 			{!active && (
 				<Button
 					variant="outline"

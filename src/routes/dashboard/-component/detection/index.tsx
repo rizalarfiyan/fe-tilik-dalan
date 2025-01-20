@@ -26,7 +26,7 @@ function Detection() {
 	}
 
 	return (
-		<div className="relative flex min-h-screen w-full items-center justify-center bg-slate-100">
+		<div className="relative flex min-h-screen w-full items-start justify-center bg-slate-100 xl:items-center">
 			<div className="absolute top-4 left-4 flex gap-3">
 				{!isDisable && (
 					<Button variant="outline" asChild>

@@ -151,22 +151,24 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 	}
 
 	return (
-		<div className="flex gap-6">
-			<div className="relative w-full max-w-3xl rounded-md border-2 border-dashed p-3">
-				<div className="relative w-full overflow-hidden">
-					<img
-						ref={imageRef}
-						src={URL.createObjectURL(file)}
-						alt="Uploaded detection object"
-						onLoad={onImageLoad}
-						className="h-auto w-full rounded-md"
-					/>
-					<canvas
-						ref={canvasRef}
-						width={shape[1]}
-						height={shape[2]}
-						className="absolute inset-0 h-full w-full"
-					/>
+		<div className="flex flex-wrap justify-center gap-6">
+			<div className="relative w-full max-w-3xl">
+				<div className="overflow-hidden rounded-md border-2 border-dashed p-3">
+					<div className="relative w-full">
+						<img
+							ref={imageRef}
+							src={URL.createObjectURL(file)}
+							alt="Uploaded detection object"
+							onLoad={onImageLoad}
+							className="h-auto w-full rounded-md"
+						/>
+						<canvas
+							ref={canvasRef}
+							width={shape[1]}
+							height={shape[2]}
+							className="absolute inset-0 h-full w-full"
+						/>
+					</div>
 				</div>
 				<div className="absolute top-6 right-6 flex items-center gap-2">
 					{obj && obj.length > 0 && (
@@ -192,7 +194,7 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 					Detection results:
 				</Typography>
 				<div className="flex flex-col items-center justify-between gap-6">
-					<table className="w-full">
+					<table className="w-full max-w-md">
 						<tbody>
 							{tables.map(({ id, label, value }) => {
 								const val = value ? (

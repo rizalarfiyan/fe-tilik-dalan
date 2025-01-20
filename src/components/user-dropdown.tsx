@@ -38,7 +38,7 @@ function UserDropdown() {
 					</button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent
-					className="min-w-64 rounded-lg"
+					className="z-[99] min-w-64 rounded-lg"
 					side="right"
 					align="end"
 					sideOffset={20}
