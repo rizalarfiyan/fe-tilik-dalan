@@ -25,9 +25,10 @@ const UploadImage: React.FC<UploadImageProps> = ({ setFile }) => {
 		accept: {
 			'image/png': ['.png'],
 			'image/jpeg': ['.jpg', '.jpeg'],
+			webp: ['.webp'],
 		},
 		maxSize: 5 * 1024 * 1024, // 5MB
-		minSize: 70 * 1024, // 70KB
+		minSize: 40 * 1024, // 40KB
 		multiple: false,
 		onDropRejected: (files) => {
 			if (files.length <= 0 || files[0].errors.length <= 0) return
@@ -52,7 +53,7 @@ const UploadImage: React.FC<UploadImageProps> = ({ setFile }) => {
 					Drag & drop an image here, or click to select one
 				</Typography>
 				<Typography className="text-xs">
-					(Only *.png, *.jpg and *.jpeg files, max 5MB, min 70KB)
+					(Only *.png, *.jpg, *.jpeg, and *.webp files, max 5MB, min 40KB)
 				</Typography>
 				{error && (
 					<div className="max-w-96">

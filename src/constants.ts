@@ -21,9 +21,9 @@ export const AUTH_ROLE = {
 
 export const KEY_CACHE_MODEL = 'cache_yolov8'
 
-export const SCORE_THRESHOLD = 0.5
+export const SCORE_THRESHOLD = 0.4
 export const MAX_OUTPUT_SIZE = 200
-export const IOU_THRESHOLD = 0.35
+export const IOU_THRESHOLD = 0.5
 export const TRACKING_THRESHOLD = 50
 
 export enum MODEL_CLASS {

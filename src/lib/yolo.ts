@@ -243,6 +243,7 @@ class Yolo {
 				layers: tf.version_layers,
 				converter: tf.version_converter,
 			},
+			class: this.classes.map((c) => c.label),
 			env: tf.env().features,
 		}
 	}
@@ -355,7 +356,7 @@ class Yolo {
 	detectVideo(
 		source: HTMLVideoElement,
 		canvas: HTMLCanvasElement,
-		stateRef: React.MutableRefObject<boolean>,
+		stateRef: React.RefObject<boolean>,
 		options?: IRenderBoxOptions,
 	) {
 		const detectFrame = async () => {

@@ -9,6 +9,7 @@ import type React from 'react'
 import LoadModel from './load-model'
 import ModelInformation from './model-information'
 import DetectImage from './detect-image'
+import DetectVideo from './detect-video'
 
 function Detection() {
 	const { active, setPage, isDisable, setActive } = useDashboard()
@@ -54,7 +55,7 @@ function Detection() {
 				</CardHeader>
 				<CardContent className="pt-6">
 					<LoadModel>
-						{active ? <h2>From Video</h2> : <DetectImage />}
+						{active ? <DetectVideo cctv={active} /> : <DetectImage />}
 					</LoadModel>
 				</CardContent>
 			</Card>

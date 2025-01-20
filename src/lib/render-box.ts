@@ -15,7 +15,7 @@ export interface ISkipCallbackProps extends IRenderBoxSize {
 export interface IRenderBoxOptions {
 	label?: boolean
 	fill?: boolean
-	prediction?: boolean
+	prediction?: 'score' | 'percent'
 	centerBox?: boolean
 	beforeMount?: () => void
 	afterMount?: () => void
@@ -109,7 +109,11 @@ class RenderBox {
 			if (hasLabel) {
 				let text = label
 				if (hasPrediction) {
-					text += ` - ${(scores[i] * 100).toFixed(1)}%`
+					if (opts.prediction === 'score') {
+						text += ` - ${scores[i].toFixed(2)}`
+					} else {
+						text += ` - ${(scores[i] * 100).toFixed(1)}%`
+					}
 				}
 
 				this.ctx.fillStyle = color

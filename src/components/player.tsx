@@ -5,28 +5,95 @@ import * as React from 'react'
 import StateObject, { type IState } from './state-object'
 import { Button } from './ui/button'
 
-export interface HlsPlayerProps
-	extends Omit<
-		React.VideoHTMLAttributes<HTMLVideoElement>,
-		'autoPlay' | 'className'
-	> {
-	hlsConfig?: Partial<HlsConfig>
-	playerRef: React.RefObject<HTMLVideoElement | null>
+interface PlayerWrapperProps extends BasePlayerProps {
 	width?: number
 	height?: number
 	thumbnail: string
+	onChangePlaying?: (isPlaying: boolean) => void
+}
+
+const PlayerWrapper: React.FC<PlayerWrapperProps> = ({
+	width,
+	height,
+	thumbnail,
+	onChangePlaying,
+	...props
+}) => {
+	const [isPlaying, setIsPlaying] = React.useState<boolean>(false)
+	const hasRender = React.useRef<boolean>(true)
+
+	React.useEffect(() => {
+		if (props.src) {
+			setIsPlaying(false)
+			hasRender.current = true
+		}
+	}, [props.src])
+
+	const playFirstTime = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		if (hasRender.current) hasRender.current = false
+		changeIsPlaying(true)
+	}
+
+	const changeIsPlaying = (isPlaying: boolean) => {
+		setIsPlaying(isPlaying)
+		onChangePlaying?.(isPlaying)
+	}
+
+	return (
+		<div
+			style={{
+				aspectRatio: calcAspectRatio(width, height),
+				backgroundSize: 'contain',
+				backgroundImage: `url(${thumbnail})`,
+			}}
+			className='relative flex items-center justify-center overflow-hidden rounded-md before:absolute before:inset-0 before:bg-slate-700/80 before:backdrop-blur-[5px] before:content-[""]'
+		>
+			{!hasRender.current ? (
+				<Player
+					isPlaying={isPlaying}
+					changeIsPlaying={changeIsPlaying}
+					{...props}
+				/>
+			) : (
+				<ButtonPlayStop
+					isPlaying={isPlaying}
+					togglePlaying={playFirstTime}
+					show
+				/>
+			)}
+		</div>
+	)
+}
+
+interface BasePlayerProps
+	extends Omit<
+		React.VideoHTMLAttributes<HTMLVideoElement>,
+		'autoPlay' | 'className' | 'width' | 'height' | 'src'
+	> {
+	hlsConfig?: Partial<HlsConfig>
+	playerRef: React.RefObject<HTMLVideoElement | null>
+	overlay?: React.ReactNode
 	src: string
 }
 
-const HlsPlayer: React.FC<HlsPlayerProps> = ({
-	hlsConfig,
+interface PlayerProps extends BasePlayerProps {
+	isPlaying: boolean
+	changeIsPlaying: (isPlaying: boolean) => void
+}
+
+const Player: React.FC<PlayerProps> = ({
 	playerRef,
+	hlsConfig,
+	isPlaying,
+	changeIsPlaying,
 	src,
+	overlay,
 	...props
 }) => {
 	const [state, setState] = React.useState<IState | null>(null)
-	const [isPlaying, setIsPlaying] = React.useState<boolean>(true)
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Skip hlsConfig from dependencies
 	React.useEffect(() => {
 		let hls: Hls
 
@@ -87,20 +154,20 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({
 				hls.destroy()
 			}
 		}
-	}, [hlsConfig, playerRef, src])
+	}, [playerRef, src])
 
 	const togglePlaying = React.useCallback(
 		(e: React.MouseEvent<HTMLButtonElement>) => {
 			e.preventDefault()
 			if (!playerRef.current) return
-			setIsPlaying((prev) => !prev)
+			changeIsPlaying?.(!isPlaying)
 			if (isPlaying) {
 				playerRef.current.pause()
 			} else {
 				playerRef.current.play()
 			}
 		},
-		[isPlaying, playerRef],
+		[isPlaying, playerRef, changeIsPlaying],
 	)
 
 	const [show, setShow] = React.useState(false)
@@ -110,10 +177,12 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({
 		<div
 			onMouseEnter={(e: React.MouseEvent) => {
 				e.preventDefault()
+				if (!isPlaying) return
 				setShow(true)
 			}}
 			onMouseLeave={(e: React.MouseEvent) => {
 				e.preventDefault()
+				if (!isPlaying) return
 				setShow(false)
 			}}
 			className="z-10"
@@ -122,13 +191,14 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({
 				<ButtonPlayStop
 					show={show}
 					isPlaying={isPlaying}
-					onClick={togglePlaying}
+					togglePlaying={togglePlaying}
 					overlay
 				/>
 			) : (
 				<StateObject loadingText="Loading stream..." state={state} />
 			)}
 			<video className={cn(hasState && 'hidden')} ref={playerRef} {...props} />
+			{overlay}
 		</div>
 	)
 }
@@ -137,14 +207,14 @@ interface ButtonPlayStopProps {
 	show?: boolean
 	overlay?: boolean
 	isPlaying: boolean
-	onClick: (e: React.MouseEvent<HTMLButtonElement>) => void
+	togglePlaying: (e: React.MouseEvent<HTMLButtonElement>) => void
 }
 
 const ButtonPlayStop: React.FC<ButtonPlayStopProps> = ({
 	overlay,
 	show,
 	isPlaying,
-	onClick,
+	togglePlaying,
 }) => {
 	return (
 		<div
@@ -159,7 +229,7 @@ const ButtonPlayStop: React.FC<ButtonPlayStopProps> = ({
 				type="button"
 				size="icon"
 				className="p-6 text-primary hover:bg-slate-200"
-				onClick={onClick}
+				onClick={togglePlaying}
 			>
 				{isPlaying ? (
 					<CircleStop className="size-8" />
@@ -171,35 +241,5 @@ const ButtonPlayStop: React.FC<ButtonPlayStopProps> = ({
 	)
 }
 
-const HlsPlayerWrapper: React.FC<HlsPlayerProps> = (props) => {
-	const { src, width, height, thumbnail } = props
-	const [isPlaying, setIsPlaying] = React.useState<boolean>(false)
-
-	React.useEffect(() => {
-		if (src) setIsPlaying(false)
-	}, [src])
-
-	const onPlaying = (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault()
-		setIsPlaying((prev) => !prev)
-	}
-
-	return (
-		<div
-			style={{
-				aspectRatio: calcAspectRatio(width, height),
-				backgroundSize: 'contain',
-				backgroundImage: `url(${thumbnail})`,
-			}}
-			className='relative flex items-center justify-center overflow-hidden rounded-md before:absolute before:inset-0 before:bg-slate-700/80 before:backdrop-blur-[3px] before:content-[""]'
-		>
-			{isPlaying ? (
-				<HlsPlayer {...props} />
-			) : (
-				<ButtonPlayStop isPlaying={isPlaying} onClick={onPlaying} show />
-			)}
-		</div>
-	)
-}
-
-export default React.memo(HlsPlayerWrapper)
+export default PlayerWrapper
+export { Player }

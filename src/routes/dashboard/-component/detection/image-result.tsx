@@ -40,6 +40,7 @@ const ImageResult: React.FC<ImageResultProps> = ({ file, setFile }) => {
 						canvas,
 						...prediction,
 					}).build({
+						prediction: 'percent',
 						fill: true,
 						label: true,
 					}),
