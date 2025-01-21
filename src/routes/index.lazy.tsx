@@ -2,6 +2,7 @@ import { Button } from '@components/ui/button'
 import useAuth from '@hooks/use-auth'
 import { createLazyFileRoute, Link } from '@tanstack/react-router'
 import { useMemo } from 'react'
+import Page from './-components'
 
 export const Route = createLazyFileRoute('/')({
 	component: RouteComponent,
@@ -24,13 +25,16 @@ function RouteComponent() {
 	}, [auth.user])
 
 	return (
-		<div className="flex min-h-screen w-full items-center justify-center">
-			<div className="space-y-4 text-center">
-				<h1 className="font-semibold text-4xl">Home Page</h1>
-				<Button asChild>
-					<Link to={link.to}>{link.text}</Link>
-				</Button>
+		<>
+			<Page />
+			<div className="flex min-h-screen w-full items-center justify-center">
+				<div className="space-y-4 text-center">
+					<h1 className="font-semibold text-4xl">Home Page</h1>
+					<Button asChild>
+						<Link to={link.to}>{link.text}</Link>
+					</Button>
+				</div>
 			</div>
-		</div>
+		</>
 	)
 }
