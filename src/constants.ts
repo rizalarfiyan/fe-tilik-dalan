@@ -41,7 +41,11 @@ export enum MODEL_CLASS {
 }
 
 export const MODEL_CLASSES: IModelClasses<MODEL_CLASS>[] = [
-	{ label: MODEL_CLASS.PEOPLE, color: '#33FF57', foreground: '#000000' },
+	{
+		label: MODEL_CLASS.PEOPLE,
+		color: '#33FF57',
+		foreground: '#000000',
+	},
 	{
 		label: MODEL_CLASS.PEDESTRIAN,
 		color: '#FF5733',

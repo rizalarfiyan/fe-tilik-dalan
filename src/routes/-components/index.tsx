@@ -1,10 +1,10 @@
-import { Link } from '@tanstack/react-router'
-import HeroSection from './hero-section'
 import Logo from '@components/logo'
-import useAuth from '@hooks/use-auth'
-import * as React from 'react'
 import { Button } from '@components/ui/button'
+import useAuth from '@hooks/use-auth'
+import { Link } from '@tanstack/react-router'
 import { LayoutDashboard, LogIn } from 'lucide-react'
+import * as React from 'react'
+import HeroSection from './hero-section'
 
 function Page() {
 	const auth = useAuth()
