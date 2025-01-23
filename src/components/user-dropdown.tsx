@@ -8,7 +8,7 @@ import {
 	DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu'
 import useAuth from '@hooks/use-auth'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import {
 	ChevronsUpDown,
 	Home,
@@ -18,11 +18,33 @@ import {
 } from 'lucide-react'
 import UserInfo from './user-info'
 import useDashboard from '@hooks/use-dashboard'
+import useConfirmation from '@hooks/use-confirmation'
 
 function UserDropdown() {
 	const { isDisable } = useDashboard()
-	const { user } = useAuth()
+	const { user, logout } = useAuth()
+	const confirm = useConfirmation()
+	const navigate = useNavigate()
+
 	if (!user) return null
+
+	const handleLogout = () => {
+		confirm.create({
+			title: 'Are you sure?',
+			description: 'Make sure you want to logout from your account.',
+			confirmText: 'Yes, Logout',
+			onConfirm: async (loading, close) => {
+				loading.open()
+				await logout().finally(() => {
+					navigate({
+						to: '/login',
+						replace: true,
+					})
+					close()
+				})
+			},
+		})
+	}
 
 	return (
 		<div>
@@ -73,7 +95,7 @@ function UserDropdown() {
 						</Link>
 					</DropdownMenuGroup>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem>
+					<DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
 						<LogOut />
 						Log out
 					</DropdownMenuItem>

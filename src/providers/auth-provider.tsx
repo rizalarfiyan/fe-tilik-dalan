@@ -60,17 +60,11 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 			},
 			logout: () => {
 				return new Promise<void>((resolve) => {
-					return axios
-						.post('/logout', null, {
-							withCredentials: true,
-						})
-						.finally(() => {
-							internalLogout()
-							const timeout = setTimeout(() => {
-								clearTimeout(timeout)
-								resolve()
-							}, 10)
-						})
+					internalLogout()
+					const timeout = setTimeout(() => {
+						clearTimeout(timeout)
+						resolve()
+					}, 10)
 				})
 			},
 		}
