@@ -6,7 +6,7 @@ import { Button } from '@components/ui/button'
 import { API_BASE_URL } from '@constants'
 import useAuth from '@hooks/use-auth'
 import illustration from '@illustration/login.svg'
-import { createLazyFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { createLazyFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { toast } from 'sonner'
@@ -86,11 +86,11 @@ function Page() {
 					</div>
 					<div className=" mt-16 space-y-3 text-center">
 						<Typography as="h3" variant="h2" className="text-white">
-							Start growing your business quickly
+							AI-Powered Visual Intelligence
 						</Typography>
 						<Typography className="text-slate-300">
-							Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque,
-							iusto aliquid ea pariatur molestiae alias quidem?
+							Machine learning algorithms detect and analyze objects in images
+							and videos with high precision and real-time processing.
 						</Typography>
 					</div>
 				</div>
@@ -111,8 +111,8 @@ function Page() {
 								Login
 							</Typography>
 							<Typography variant="muted">
-								Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-								Eveniet, soluta quod voluptatem cumque suscipit vitae?
+								Access AI capabilities for intelligent image and video object
+								recognition using cutting-edge machine learning technologies.
 							</Typography>
 						</div>
 					</div>
