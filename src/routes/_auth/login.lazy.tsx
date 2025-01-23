@@ -36,7 +36,7 @@ function Page() {
 	const auth = useAuth()
 	const data = Route.useSearch()
 	const token = parseToken(data.token)
-	const navigate = useNavigate()
+	const navigate = Route.useNavigate()
 	const [showLoading, setShowLoading] = React.useState(!!data.token)
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Only first render
@@ -56,6 +56,15 @@ function Page() {
 					setShowLoading(false)
 				})
 			return
+		}
+
+		if (token.message && data.token) {
+			toast.error(token.message)
+			setShowLoading(false)
+			navigate({
+				search: undefined,
+				replace: true,
+			})
 		}
 	}, [])
 
