@@ -3,7 +3,7 @@ import { Camera, Video, MapIcon, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import Typography from '@components/typography'
-import { MODEL_CLASSES } from '@constants'
+import { APP_NAME, MODEL_CLASSES } from '@constants'
 import { shuffleArray } from '@lib/utils'
 import { Link } from '@tanstack/react-router'
 import useAuth from '@hooks/use-auth'
@@ -31,6 +31,8 @@ const FEATURES = [
 		text: 'Image Config',
 	},
 ]
+
+const percentage = Math.floor(Math.random() * 41) + 50
 
 const HeroSection = () => {
 	const auth = useAuth()
@@ -91,10 +93,14 @@ const HeroSection = () => {
 					<div className="relative">
 						<div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-xl">
 							<div className="relative mb-4 aspect-video overflow-hidden rounded-lg bg-slate-100">
-								{/* TODO: Change image */}
+								<img
+									className="w-full object-center"
+									src="./hero.jpg"
+									alt={APP_NAME}
+								/>
 							</div>
 
-							<div className="grid grid-cols-2 items-center gap-4">
+							<div className="grid grid-cols-2 gap-4">
 								<div className="space-y-2">
 									<div className="font-medium text-slate-700 text-sm">
 										Model Classes
@@ -120,10 +126,15 @@ const HeroSection = () => {
 										Confidence
 									</div>
 									<div className="h-2 overflow-hidden rounded-full bg-slate-100">
-										<div className="h-full w-[83%] bg-red-500" />
+										<div
+											className="h-full bg-red-500"
+											style={{
+												width: `${percentage}%`,
+											}}
+										/>
 									</div>
 									<div className="text-right text-slate-500 text-xs">
-										83% accuracy
+										{percentage}% accuracy
 									</div>
 								</div>
 							</div>
