@@ -6,10 +6,5 @@ export interface CCTV {
 	longitude: number
 	width: number
 	height: number
-	image: CCTVImage
-}
-
-export interface CCTVImage {
-	src: string
-	thumb: string
+	thumbnail: string
 }

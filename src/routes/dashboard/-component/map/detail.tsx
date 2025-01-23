@@ -14,7 +14,7 @@ function Detail() {
 	const playerRef = React.useRef<HTMLVideoElement | null>(null)
 	if (!active) return null
 
-	const { title, image, link, width, height } = active
+	const { title, thumbnail, link, width, height } = active
 	const onDeactivate = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		setActive(null)
@@ -63,7 +63,7 @@ function Detail() {
 				<Player
 					playerRef={playerRef}
 					src={link}
-					thumbnail={image.thumb}
+					thumbnail={thumbnail}
 					width={width}
 					height={height}
 					muted

@@ -2,6 +2,7 @@ import type { CCTV } from '@/types/cctv'
 import Typography from '@components/typography'
 import { Label } from '@components/ui/label'
 import { RadioGroupItem } from '@components/ui/radio-group'
+import { storageUrl } from '@lib/utils'
 import * as React from 'react'
 
 interface ResultProps {
@@ -19,7 +20,7 @@ const Result: React.FC<ResultProps> = ({ results }) => {
 				>
 					<div className="aspect-video h-14 w-auto overflow-hidden rounded-md border border-border bg-slate-200">
 						<img
-							src={val.image.thumb}
+							src={storageUrl(val.thumbnail)}
 							className="h-full w-full object-cover"
 							alt={val.title}
 						/>

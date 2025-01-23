@@ -20,7 +20,7 @@ const DetectVideo: React.FC<DetectVideoProps> = ({ cctv }) => {
 	const { model } = useDetection()
 	const shape = model!.shape()
 
-	const { link, image, width, height } = cctv!
+	const { link, thumbnail, width, height } = cctv!
 	const playerRef = React.useRef<HTMLVideoElement>(null)
 	const canvasRef = React.useRef<HTMLCanvasElement>(null)
 	const stateRef = React.useRef<boolean>(false)
@@ -119,7 +119,7 @@ const DetectVideo: React.FC<DetectVideoProps> = ({ cctv }) => {
 				<PlayerWrapper
 					playerRef={playerRef}
 					src={link}
-					thumbnail={image.thumb}
+					thumbnail={thumbnail}
 					width={width}
 					height={height}
 					onChangePlaying={setIsPlaying}

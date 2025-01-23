@@ -2,7 +2,7 @@ import Logo from '@components/logo'
 import Typography from '@components/typography'
 import { Button } from '@components/ui/button'
 import { Progress } from '@components/ui/progress'
-import { MODEL_CLASSES } from '@constants'
+import { MODEL_CLASSES, STORAGE_BASE_URL } from '@constants'
 import useDashboard from '@hooks/use-dashboard'
 import useDetection from '@hooks/use-detection'
 import { calcAspectRatio, cn } from '@lib/utils'
@@ -41,7 +41,7 @@ interface IProgress {
 	reason: string
 }
 
-const MODEL_URL = `${window.location.origin}/models/yolov8n/model.json`
+const MODEL_URL = `${STORAGE_BASE_URL}model/yolov8n/model.json`
 
 const LoadModel: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const { setIsDisable } = useDashboard()

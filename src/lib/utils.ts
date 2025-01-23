@@ -1,3 +1,4 @@
+import { STORAGE_BASE_URL } from '@constants'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -49,4 +50,9 @@ export const kebabToTitleCase = (str: string): string => {
 		.split('-')
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(' ')
+}
+
+export const storageUrl = (path: string): string => {
+	if (!path) return STORAGE_BASE_URL
+	return STORAGE_BASE_URL + path
 }

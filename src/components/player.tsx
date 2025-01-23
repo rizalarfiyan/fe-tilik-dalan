@@ -1,4 +1,4 @@
-import { calcAspectRatio, cn } from '@/lib/utils'
+import { calcAspectRatio, cn, storageUrl } from '@/lib/utils'
 import Hls, { type HlsConfig } from 'hls.js'
 import { CirclePlay, CircleStop } from 'lucide-react'
 import * as React from 'react'
@@ -45,7 +45,7 @@ const PlayerWrapper: React.FC<PlayerWrapperProps> = ({
 			style={{
 				aspectRatio: calcAspectRatio(width, height),
 				backgroundSize: 'contain',
-				backgroundImage: `url(${thumbnail})`,
+				backgroundImage: `url(${storageUrl(thumbnail)})`,
 			}}
 			className='relative flex items-center justify-center overflow-hidden rounded-md before:absolute before:inset-0 before:bg-slate-700/80 before:backdrop-blur-[5px] before:content-[""]'
 		>
