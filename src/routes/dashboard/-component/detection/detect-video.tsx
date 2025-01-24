@@ -3,6 +3,8 @@ import PlayerWrapper from '@components/player'
 import Typography from '@components/typography'
 import { TRACKING_THRESHOLD } from '@constants'
 import useDetection from '@hooks/use-detection'
+import { isMobile as detectIsMobile } from '@lib/utils'
+import { CircleAlert } from 'lucide-react'
 import * as React from 'react'
 
 interface DetectVideoProps {
@@ -15,7 +17,8 @@ interface ITrackedObject {
 	label: string
 }
 
-let i = 0
+const isMobile = detectIsMobile()
+
 const DetectVideo: React.FC<DetectVideoProps> = ({ cctv }) => {
 	const { model } = useDetection()
 	const shape = model!.shape()
@@ -35,6 +38,8 @@ const DetectVideo: React.FC<DetectVideoProps> = ({ cctv }) => {
 	}, [link])
 
 	React.useEffect(() => {
+		if (isMobile) return
+
 		// first render
 		if (!isPlaying && !playerRef.current) return
 
@@ -45,13 +50,10 @@ const DetectVideo: React.FC<DetectVideoProps> = ({ cctv }) => {
 
 		if (!playerRef.current) return
 		stateRef.current = true
-		console.log('PLAYER REF: ', playerRef.current)
 		playerRef.current.onplaying = handleOnPlaying
 	}, [isPlaying])
 
 	const handleOnPlaying = React.useCallback(async () => {
-		console.log('handle on playing')
-
 		const canvas = canvasRef?.current
 		const player = playerRef?.current
 		if (!player || !canvas || !model) return
@@ -114,7 +116,7 @@ const DetectVideo: React.FC<DetectVideoProps> = ({ cctv }) => {
 	}, [model])
 
 	return (
-		<div className="flex justify-center gap-4">
+		<div className="flex items-center justify-center gap-4">
 			<div className="relative w-full max-w-3xl">
 				<PlayerWrapper
 					playerRef={playerRef}
@@ -139,13 +141,23 @@ const DetectVideo: React.FC<DetectVideoProps> = ({ cctv }) => {
 					muted
 				/>
 			</div>
-			<div className="mt-4 flex-grow space-y-4">
-				<Typography variant="h4" as="h3" className="text-center">
-					Detection results:
-				</Typography>
-				<div>
-					{String(isPlaying)} - {i++}
-				</div>
+			<div className="flex-grow space-y-4">
+				{isMobile ? (
+					<div className="mx-auto flex max-w-sm items-center gap-3 rounded-md border border-red-200 bg-red-50 p-3 text-red-600">
+						<CircleAlert className="size-8 flex-shrink-0" />
+						<Typography as="span" variant="muted" className="text-red-600">
+							This feature is not available on mobile
+						</Typography>
+					</div>
+				) : (
+					<div className="mx-auto flex max-w-sm items-center gap-3 rounded-md border border-orange-200 bg-orange-50 p-3 text-orange-600">
+						<CircleAlert className="size-8 flex-shrink-0" />
+						<Typography as="span" variant="muted" className="text-orange-600">
+							The result may not be accurate, because FPS is limited by the
+							browser. Realtime detection with GPU is experimental on browser.
+						</Typography>
+					</div>
+				)}
 			</div>
 		</div>
 	)

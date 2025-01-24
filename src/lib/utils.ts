@@ -72,3 +72,9 @@ export const shuffleArray = <T>(array: T[]): T[] => {
 
 	return array
 }
+
+export const isMobile = (): boolean => {
+	return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile|palm|windows phone|tablet|kindle|silk|playbook|xoom|nexus|sony|lumia|sm-g/i.test(
+		navigator.userAgent.toLowerCase(),
+	)
+}

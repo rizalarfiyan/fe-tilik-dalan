@@ -41,7 +41,7 @@ interface IProgress {
 	reason: string
 }
 
-const MODEL_URL = `${STORAGE_BASE_URL}model/yolov8n/model.json`
+const MODEL_URL = `${STORAGE_BASE_URL}model/new-yolov8n/model.json`
 
 const LoadModel: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const { setIsDisable } = useDashboard()

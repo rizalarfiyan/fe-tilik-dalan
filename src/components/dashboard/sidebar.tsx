@@ -104,7 +104,7 @@ function Sidebar() {
 				</div>
 				<div className="rounded-md border pr-0 pl-3">
 					<StateApi
-						className="h-[calc(100vh_-_200px)]"
+						className="h-[calc(100vh_-_220px)]"
 						wrapClassName="max-w-52"
 						{...{ isLoading, error }}
 					>
